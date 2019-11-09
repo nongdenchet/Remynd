@@ -7,5 +7,7 @@ class RemyndApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        component = DaggerAppComponent.factory()
+            .create(this)
     }
 }
