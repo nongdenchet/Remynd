@@ -7,4 +7,7 @@
     <color name="colorSecondaryDark">#872a25</color>
     <color name="colorSecondaryLight">#ce635e</color>
     <color name="colorAccent">@color/colorSecondary</color>
+    <color name="white">#ffffff</color>
+    <color name="white_80">#80ffffff</color>
+    <color name="ic_launcher_background">@color/colorPrimary</color>
 </resources>

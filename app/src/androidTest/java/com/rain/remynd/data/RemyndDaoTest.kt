@@ -23,7 +23,8 @@ class RemyndDaoTest {
     private val data = RemyndEntity(
         content = "Drink Water",
         triggerAt = 1000000,
-        interval = 60 * 1000
+        interval = 60 * 1000,
+        active = true
     )
 
     @Before
@@ -48,7 +49,8 @@ class RemyndDaoTest {
                             id = 1,
                             content = "Drink Water",
                             triggerAt = 1000000,
-                            interval = 60 * 1000
+                            interval = 60 * 1000,
+                            active = true
                         ),
                         it[0]
                     )
@@ -63,7 +65,8 @@ class RemyndDaoTest {
             val data = RemyndEntity(
                 content = "Drink Water",
                 triggerAt = 1000000,
-                interval = 60 * 1000
+                interval = 60 * 1000,
+                active = true
             )
             dao.insert(data)
             dao.observe()
@@ -75,7 +78,8 @@ class RemyndDaoTest {
                             id = 1,
                             content = "Drink Water",
                             triggerAt = 1000000,
-                            interval = 60 * 1000
+                            interval = 60 * 1000,
+                            active = true
                         ),
                         it[0]
                     )
@@ -105,7 +109,8 @@ class RemyndDaoTest {
                             id = 1,
                             content = "Drink Water",
                             triggerAt = 1000000,
-                            interval = 60 * 1000
+                            interval = 60 * 1000,
+                            active = true
                         ),
                         it[0]
                     )
@@ -116,7 +121,8 @@ class RemyndDaoTest {
                 id = 1,
                 content = "Test",
                 triggerAt = 1000000,
-                interval = 60 * 1000
+                interval = 60 * 1000,
+                active = true
             )
             dao.update(data)
             dao.observe()
@@ -129,7 +135,5 @@ class RemyndDaoTest {
     }
 
     @After
-    fun tearDown() {
-        db.close()
-    }
+    fun tearDown() = db.close()
 }

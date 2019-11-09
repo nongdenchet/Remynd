@@ -11,6 +11,12 @@ interface RemyndDao {
     @Query("SELECT * FROM remynd_table")
     fun observe(): Flow<List<RemyndEntity>>
 
+    @Query("SELECT COUNT(id) FROM remynd_table")
+    suspend fun count(): Int
+
+    @Query("SELECT * FROM remynd_table WHERE id = :id")
+    suspend fun getByID(id: Long): RemyndEntity
+
     @Insert
     suspend fun insert(data: RemyndEntity)
 

@@ -1,5 +1,7 @@
 package com.rain.remynd
 
+import com.rain.remynd.data.StorageModule
+import com.rain.remynd.ui.RemyndDependency
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -12,9 +14,9 @@ annotation class AppScope
 @Module
 object AppModule
 
-@Component(modules = [AppModule::class])
+@Component(modules = [AppModule::class, StorageModule::class])
 @AppScope
-interface AppComponent {
+interface AppComponent : RemyndDependency {
 
     @Component.Factory
     interface Factory {

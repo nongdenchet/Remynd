@@ -16,6 +16,9 @@ data class RemyndEntity(
     @ColumnInfo(name = "triggerAt")
     val triggerAt: Long,
 
+    @ColumnInfo(name = "active")
+    val active: Boolean,
+
     @ColumnInfo(name = "interval")
-    val interval: Long?
+    val interval: Long? = null
 )

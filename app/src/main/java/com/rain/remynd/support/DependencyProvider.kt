@@ -1,12 +1,12 @@
 package com.rain.remynd.support
 
 import android.content.Context
+import kotlin.reflect.KClass
 
-interface DependencyProvider<out T> {
-    fun provide(): T
+interface DependencyProvider {
+    fun <T : Any> provide(clazz: KClass<T>): T
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Context.dependency(): T {
-    return (this as DependencyProvider<T>).provide()
+fun <T : Any> Context.dependency(clazz: KClass<T>): T {
+    return (this as DependencyProvider).provide(clazz)
 }
