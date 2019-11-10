@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rain.remynd.databinding.FragmentRemyndListBinding
-import com.rain.remynd.support.dependency
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class RemyndListFragment : Fragment(), RemyndListView {
+class RemyndListFragment(
+    private val dependency: RemyndListDependency
+) : Fragment(), RemyndListView {
     private lateinit var component: RemyndListComponent
     private lateinit var binding: FragmentRemyndListBinding
 
@@ -21,18 +23,19 @@ class RemyndListFragment : Fragment(), RemyndListView {
     lateinit var adapter: RemyndListAdapter
     @Inject
     lateinit var presenter: RemyndListPresenter
+    @Inject
+    lateinit var lifecycleObservers: Set<@JvmSuppressWildcards LifecycleObserver>
 
     companion object {
-        fun newInstance(): RemyndListFragment = RemyndListFragment()
         fun tag(): String = RemyndListFragment::class.java.simpleName
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         component = DaggerRemyndListComponent.factory()
-            .create(this, context.dependency(RemyndListDependency::class))
+            .create(this, dependency)
         component.inject(this)
-        lifecycle.addObserver(presenter)
+        lifecycleObservers.forEach { lifecycle.addObserver(it) }
     }
 
     override fun onCreateView(
@@ -52,8 +55,8 @@ class RemyndListFragment : Fragment(), RemyndListView {
     }
 
     override fun onDestroy() {
-        lifecycle.removeObserver(presenter)
         super.onDestroy()
+        lifecycleObservers.forEach { lifecycle.removeObserver(it) }
     }
 
     override fun render(items: List<RemyndItemViewModel>) = adapter.submitList(items)

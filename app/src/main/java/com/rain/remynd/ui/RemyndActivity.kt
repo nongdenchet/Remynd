@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
@@ -31,6 +32,8 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
 
     @Inject
     lateinit var remyndDao: RemyndDao
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private val parentJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + parentJob)
@@ -76,10 +79,11 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
     }
 
     private fun attachFragment() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.main_container,
-                RemyndListFragment.newInstance(),
+                fragmentFactory.instantiate(classLoader, RemyndListFragment::class.java.name),
                 RemyndListFragment.tag()
             )
             .commit()

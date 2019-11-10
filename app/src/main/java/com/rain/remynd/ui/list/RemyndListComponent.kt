@@ -1,10 +1,12 @@
 package com.rain.remynd.ui.list
 
+import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.data.RemyndDao
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import javax.inject.Scope
 
 @Scope
@@ -29,6 +31,18 @@ object RemyndListModule {
         fragment,
         remyndDao
     )
+
+    @Provides
+    @JvmStatic
+    @IntoSet
+    @RemyndListScope
+    fun providePresenterObserver(presenter: RemyndListPresenter): LifecycleObserver = presenter
+
+    @Provides
+    @JvmStatic
+    @IntoSet
+    @RemyndListScope
+    fun provideAdapterObserver(adapter: RemyndListAdapter): LifecycleObserver = adapter
 }
 
 @RemyndListScope

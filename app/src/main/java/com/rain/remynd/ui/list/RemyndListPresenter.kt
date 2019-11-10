@@ -35,11 +35,11 @@ class RemyndListPresenter(
 
     private fun observeItemEvents() {
         scope.launch(Dispatchers.IO) {
-            Log.d(tag, Thread.currentThread().name + ": observe switch events")
             view.itemEvents()
                 .distinctUntilChanged()
                 .debounce(300)
                 .collect {
+                    Log.d(tag, Thread.currentThread().name + ": observe switch events")
                     when (it) {
                         is ItemEvent.ClickEvent -> openItem(it.id)
                         is ItemEvent.SwitchEvent -> updateItem(it.id, it.active)
