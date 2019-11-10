@@ -1,9 +1,9 @@
 package com.rain.remynd.data
 
 import android.content.Context
+import android.os.Build
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
@@ -13,9 +13,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class RemyndDaoTest {
     private lateinit var dao: RemyndDao
     private lateinit var db: RemyndDB
@@ -39,7 +42,8 @@ class RemyndDaoTest {
     @Test
     fun insert() {
         runBlocking {
-            dao.insert(data)
+            assertEquals(1, dao.insert(data))
+            assertEquals(1, dao.count())
             dao.observe()
                 .take(1)
                 .collect {
@@ -68,25 +72,10 @@ class RemyndDaoTest {
                 interval = 60 * 1000,
                 active = true
             )
-            dao.insert(data)
-            dao.observe()
-                .take(1)
-                .collect {
-                    assertEquals(1, it.size)
-                    assertEquals(
-                        RemyndEntity(
-                            id = 1,
-                            content = "Drink Water",
-                            triggerAt = 1000000,
-                            interval = 60 * 1000,
-                            active = true
-                        ),
-                        it[0]
-                    )
-                }
+            assertEquals(1, dao.insert(data))
 
             // Delete
-            dao.delete(1)
+            assertEquals(1, dao.delete(1))
             dao.observe()
                 .take(1)
                 .collect {
@@ -99,22 +88,7 @@ class RemyndDaoTest {
     fun update() {
         runBlocking {
             // Insert
-            dao.insert(data)
-            dao.observe()
-                .take(1)
-                .collect {
-                    assertEquals(1, it.size)
-                    assertEquals(
-                        RemyndEntity(
-                            id = 1,
-                            content = "Drink Water",
-                            triggerAt = 1000000,
-                            interval = 60 * 1000,
-                            active = true
-                        ),
-                        it[0]
-                    )
-                }
+            assertEquals(1, dao.insert(data))
 
             // Update
             val data = RemyndEntity(
@@ -124,7 +98,7 @@ class RemyndDaoTest {
                 interval = 60 * 1000,
                 active = true
             )
-            dao.update(data)
+            assertEquals(1, dao.update(data))
             dao.observe()
                 .take(1)
                 .collect {
@@ -135,14 +109,51 @@ class RemyndDaoTest {
     }
 
     @Test
-    fun updateNonExistRecord() {
+    fun updateActive() {
+        runBlocking {
+            // Insert
+            assertEquals(1, dao.insert(data))
+
+            // Update
+            assertEquals(1, dao.update(1, false))
+            dao.observe()
+                .take(1)
+                .collect {
+                    assertEquals(
+                        RemyndEntity(
+                            id = 1,
+                            content = "Drink Water",
+                            triggerAt = 1000000,
+                            interval = 60 * 1000,
+                            active = false
+                        ),
+                        it[0]
+                    )
+                }
+        }
+    }
+
+    @Test
+    fun updateActiveNonExistRecord() {
         runBlocking {
             assertEquals(0, dao.update(1, true))
         }
     }
 
-    @After
-    fun tearDown() {
-        db.close()
+    @Test
+    fun updateNonExistRecord() {
+        runBlocking {
+            assertEquals(0, dao.update(data))
+        }
     }
+
+    @Test
+    fun deleteNonExistRecord() {
+        runBlocking {
+            assertEquals(0, dao.delete(1))
+        }
+    }
+
+    @After
+    fun tearDown() = db.close()
 }

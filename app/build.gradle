@@ -11,6 +11,12 @@ android {
         enabled = true
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     defaultConfig {
         applicationId "com.rain.remynd"
         minSdkVersion 21
@@ -61,6 +67,11 @@ dependencies {
 
     // Test
     testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation('org.robolectric:robolectric:4.3') {
+        // https://github.com/robolectric/robolectric/issues/5245
+        exclude group: 'com.google.auto.service', module: 'auto-service'
+    }
 
     // Android Test
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
