@@ -134,6 +134,15 @@ class RemyndDaoTest {
         }
     }
 
+    @Test
+    fun updateNonExistRecord() {
+        runBlocking {
+            assertEquals(0, dao.update(1, true))
+        }
+    }
+
     @After
-    fun tearDown() = db.close()
+    fun tearDown() {
+        db.close()
+    }
 }

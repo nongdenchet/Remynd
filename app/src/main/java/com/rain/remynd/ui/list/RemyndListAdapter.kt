@@ -34,6 +34,11 @@ private val diffCallback = object : DiffUtil.ItemCallback<RemyndItemViewModel>()
     }
 }
 
+sealed class ItemEvent {
+    data class ClickEvent(val id: Long) : ItemEvent()
+    data class SwitchEvent(val id: Long, val active: Boolean) : ItemEvent()
+}
+
 @Suppress("EXPERIMENTAL_API_USAGE")
 class RemyndListAdapter :
     ListAdapter<RemyndItemViewModel, RemyndListAdapter.ViewHolder>(diffCallback),
@@ -41,11 +46,9 @@ class RemyndListAdapter :
     private val tag = RemyndListAdapter::class.java.simpleName
     private val parentJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + parentJob)
-    private val clicksChannel = BroadcastChannel<Int>(1)
-    private val switchChannel = BroadcastChannel<Pair<Int, Boolean>>(1)
+    private val eventChannel = BroadcastChannel<ItemEvent>(1)
 
-    fun clickEvents(): Flow<Int> = clicksChannel.asFlow()
-    fun switchEvents(): Flow<Pair<Int, Boolean>> = switchChannel.asFlow()
+    fun itemEvents(): Flow<ItemEvent> = eventChannel.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -53,9 +56,8 @@ class RemyndListAdapter :
         return ViewHolder(ItemRemyndListBinding.inflate(inflater, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(getItem(position))
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -65,7 +67,7 @@ class RemyndListAdapter :
 
     inner class ViewHolder(private val binding: ItemRemyndListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        
+
         fun bind(item: RemyndItemViewModel) {
             binding.sEnabled.isChecked = item.active
             binding.tvTime.text = item.time
@@ -74,12 +76,12 @@ class RemyndListAdapter :
             binding.tvDate.text = item.date
             binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
                 scope.launch(Dispatchers.Main) {
-                    switchChannel.send(Pair(adapterPosition, isChecked))
+                    eventChannel.send(ItemEvent.SwitchEvent(getItem(adapterPosition).id, isChecked))
                 }
             }
             binding.root.setOnClickListener {
                 scope.launch(Dispatchers.Main) {
-                    clicksChannel.send(adapterPosition)
+                    eventChannel.send(ItemEvent.ClickEvent(getItem(adapterPosition).id))
                 }
             }
         }

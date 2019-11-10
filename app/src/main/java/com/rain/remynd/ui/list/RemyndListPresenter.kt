@@ -13,9 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -31,36 +29,47 @@ class RemyndListPresenter(
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
         Log.d(tag, "onCreate")
-        val items = remyndDao.observe()
+        observeItems()
+        observeItemEvents()
+    }
+
+    private fun observeItemEvents() {
+        scope.launch(Dispatchers.IO) {
+            Log.d(tag, Thread.currentThread().name + ": observe switch events")
+            view.itemEvents()
+                .distinctUntilChanged()
+                .debounce(300)
+                .collect {
+                    when (it) {
+                        is ItemEvent.ClickEvent -> openItem(it.id)
+                        is ItemEvent.SwitchEvent -> updateItem(it.id, it.active)
+                    }
+                }
+        }
+    }
+
+    private fun openItem(id: Long) {
+        Log.d(tag, Thread.currentThread().name + ": open $id")
+        scope.launch(Dispatchers.Main) {
+            // TODO: implement this
+        }
+    }
+
+    private suspend fun updateItem(id: Long, active: Boolean) {
+        Log.d(tag, Thread.currentThread().name + ": switching $id, $active")
+        remyndDao.update(id, active)
+    }
+
+    private fun observeItems() {
         scope.launch(Dispatchers.IO) {
             Log.d(tag, Thread.currentThread().name + ": observe")
-            items.map { toViewModels(it) }
+            remyndDao.observe()
+                .map { toViewModels(it) }
                 .collect {
                     Log.d(tag, Thread.currentThread().name + ": collect data")
                     scope.launch(Dispatchers.Main) {
                         Log.d(tag, Thread.currentThread().name + ": render data")
                         view.render(it)
-                    }
-                }
-        }
-        scope.launch(Dispatchers.IO) {
-            Log.d(tag, Thread.currentThread().name + ": observe switch events")
-            view.switchEvents()
-                .distinctUntilChanged()
-                .debounce(300)
-                .flatMapLatest { pair ->
-                    val (pos, active) = pair
-                    Log.d(tag, Thread.currentThread().name + ": flatMapLatest")
-                    items.take(1)
-                        .map { it.getOrNull(pos) }
-                        .map { it?.copy(active = active) }
-                }
-                .collect {
-                    if (it != null) {
-                        Log.d(tag, Thread.currentThread().name + ": switching")
-                        remyndDao.update(it)
-                    } else {
-                        Log.d(tag, Thread.currentThread().name + ": cannot switch")
                     }
                 }
         }

@@ -58,7 +58,5 @@ class RemyndListFragment : Fragment(), RemyndListView {
 
     override fun render(items: List<RemyndItemViewModel>) = adapter.submitList(items)
 
-    override fun clickEvents(): Flow<Int> = adapter.clickEvents()
-
-    override fun switchEvents(): Flow<Pair<Int, Boolean>> = adapter.switchEvents()
+    override fun itemEvents(): Flow<ItemEvent> = adapter.itemEvents()
 }

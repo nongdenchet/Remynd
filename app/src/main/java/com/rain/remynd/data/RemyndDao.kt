@@ -17,12 +17,15 @@ interface RemyndDao {
     @Query("SELECT * FROM remynd_table WHERE id = :id")
     suspend fun getByID(id: Long): RemyndEntity
 
+    @Query("UPDATE remynd_table SET active = :active WHERE id = :id")
+    suspend fun update(id: Long, active: Boolean): Int
+
     @Insert
-    suspend fun insert(data: RemyndEntity)
+    suspend fun insert(data: RemyndEntity): Long
 
     @Update
-    suspend fun update(data: RemyndEntity)
+    suspend fun update(data: RemyndEntity): Int
 
     @Query("DELETE FROM remynd_table WHERE id = :id")
-    suspend fun delete(id: Long)
+    suspend fun delete(id: Long): Int
 }
