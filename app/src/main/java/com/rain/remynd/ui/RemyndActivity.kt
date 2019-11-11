@@ -13,9 +13,7 @@ import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.AlarmReceiver
-import com.rain.remynd.support.DependencyProvider
 import com.rain.remynd.support.dependency
-import com.rain.remynd.ui.list.RemyndListDependency
 import com.rain.remynd.ui.list.RemyndListFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,27 +23,26 @@ import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
-class RemyndActivity : AppCompatActivity(), DependencyProvider {
-    private lateinit var component: RemyndComponent
+class RemyndActivity : AppCompatActivity() {
+    private val parentJob = Job()
+    private val scope = CoroutineScope(Dispatchers.Main + parentJob)
+    private val tag = RemyndActivity::class.java.simpleName
 
     @Inject
     lateinit var remyndDao: RemyndDao
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private val parentJob = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + parentJob)
-    private val tag = RemyndActivity::class.java.simpleName
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setUpDependency()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remynd)
-        attachFragment()
-        initialize()
+        if (savedInstanceState == null) {
+            attachFragment()
+            initialize()
+        }
     }
 
     private fun initialize() {
@@ -74,9 +71,9 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
     }
 
     private fun setUpDependency() {
-        component = DaggerRemyndComponent.factory()
+        DaggerRemyndComponent.factory()
             .create(this, applicationContext.dependency(RemyndDependency::class))
-        component.inject(this)
+            .inject(this)
     }
 
     private fun attachFragment() {
@@ -92,14 +89,6 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
     override fun onDestroy() {
         super.onDestroy()
         parentJob.cancel()
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> provide(clazz: KClass<T>): T {
-        return when (clazz) {
-            RemyndListDependency::class -> component as T
-            else -> throw IllegalStateException("RemyndActivity cannot satisfy dependency: $clazz")
-        }
     }
 
     @Suppress("unused")
