@@ -18,6 +18,7 @@ import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.ui.FragmentFactoryImpl
+import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.withRecyclerView
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -41,7 +42,8 @@ class RemyndListFragmentTest {
         db = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext<Context>(),
             RemyndDB::class.java
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
         remyndDao = db.dao()
         factory = FragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
@@ -74,27 +76,26 @@ class RemyndListFragmentTest {
             factory = factory,
             themeResId = R.style.AppTheme
         )
-        Thread.sleep(1000)
 
         // First item
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(0, R.id.tvContent)
-        ).check(matches(withText("Drink Water")))
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(0, R.id.sEnabled)
-        ).check(matches(isNotChecked()))
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.tvContent))
+                .check(matches(withText("Drink Water")))
+        }
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
+                .check(matches(isNotChecked()))
+        }
 
         // Second item
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(1, R.id.tvContent)
-        ).check(matches(withText("Test Code")))
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(1, R.id.sEnabled)
-        ).check(matches(isChecked()))
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(1, R.id.tvContent))
+                .check(matches(withText("Test Code")))
+        }
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(1, R.id.sEnabled))
+                .check(matches(isChecked()))
+        }
     }
 
     @Test
@@ -104,20 +105,19 @@ class RemyndListFragmentTest {
             factory = factory,
             themeResId = R.style.AppTheme
         )
-        Thread.sleep(1000)
 
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(0, R.id.sEnabled)
-        ).check(matches(isNotChecked()))
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(0, R.id.sEnabled)
-        ).perform(click())
-        onView(
-            withRecyclerView(R.id.rvReminds)
-                .atPositionOnView(0, R.id.sEnabled)
-        ).check(matches(isChecked()))
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
+                .check(matches(isNotChecked()))
+        }
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
+                .perform(click())
+        }
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
+                .check(matches(isChecked()))
+        }
     }
 
     @After
