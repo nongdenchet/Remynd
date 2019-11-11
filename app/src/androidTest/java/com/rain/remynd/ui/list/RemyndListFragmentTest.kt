@@ -10,6 +10,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -19,6 +20,7 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.ui.FragmentFactoryImpl
 import com.rain.remynd.ui.execute
+import com.rain.remynd.ui.recyclerViewCount
 import com.rain.remynd.ui.withRecyclerView
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -95,6 +97,19 @@ class RemyndListFragmentTest {
         execute {
             onView(withRecyclerView(R.id.rvReminds).atPositionOnView(1, R.id.sEnabled))
                 .check(matches(isChecked()))
+        }
+    }
+
+    @Test
+    fun testRecreateFragment() {
+        mockData()
+        launchFragmentInContainer<RemyndListFragment>(
+            factory = factory,
+            themeResId = R.style.AppTheme
+        ).recreate()
+
+        execute {
+            onView(withId(R.id.rvReminds)).check(recyclerViewCount(2))
         }
     }
 

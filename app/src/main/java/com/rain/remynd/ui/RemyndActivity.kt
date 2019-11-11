@@ -40,9 +40,10 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
     private val tag = RemyndActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setUpDependency()
+        supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remynd)
-        setUpDependency()
         attachFragment()
         initialize()
     }
@@ -79,7 +80,6 @@ class RemyndActivity : AppCompatActivity(), DependencyProvider {
     }
 
     private fun attachFragment() {
-        supportFragmentManager.fragmentFactory = fragmentFactory
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.main_container,

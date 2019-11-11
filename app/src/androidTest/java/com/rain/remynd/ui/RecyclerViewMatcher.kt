@@ -4,21 +4,39 @@ import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAssertion
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Assert.assertEquals
+
+fun recyclerViewCount(value: Int): ViewAssertion = RecyclerViewItemCountAssertion(value)
+
+private class RecyclerViewItemCountAssertion(private val expectedCount: Int) : ViewAssertion {
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+        if (noViewFoundException != null) {
+            throw noViewFoundException
+        }
+
+        val recyclerView = view as RecyclerView
+        val adapter = recyclerView.adapter as RecyclerView.Adapter
+
+        assertEquals(expectedCount, adapter.itemCount)
+    }
+}
 
 fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)
 }
 
 class RecyclerViewMatcher(private val recyclerViewId: Int) {
-    fun atPosition(position: Int): Matcher<View> = atPositionOnView(position, -1)
+    fun atPosition(pos: Int): Matcher<View> = atPositionOnView(pos, -1)
 
-    fun atPositionOnView(position: Int, targetViewId: Int): Matcher<View> {
+    fun atPositionOnView(pos: Int, targetViewId: Int): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
-            var resources: Resources? = null
-            var childView: View? = null
+            private var resources: Resources? = null
+            private var childView: View? = null
 
             override fun describeTo(description: Description) {
                 var idDescription = recyclerViewId.toString()
@@ -41,8 +59,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
                 if (childView == null) {
                     val recyclerView = view.rootView.findViewById(recyclerViewId) as RecyclerView
                     if (recyclerView.id == recyclerViewId) {
-                        childView =
-                            recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
+                        childView = recyclerView.findViewHolderForAdapterPosition(pos)!!.itemView
                     } else {
                         return false
                     }
