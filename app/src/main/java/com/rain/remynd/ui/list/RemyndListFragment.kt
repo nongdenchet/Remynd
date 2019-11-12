@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.rain.remynd.databinding.FragmentRemyndListBinding
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlin.math.abs
 
 class RemyndListFragment(
     private val dependency: RemyndListDependency
@@ -52,6 +54,10 @@ class RemyndListFragment(
         binding.rvReminds.layoutManager = LinearLayoutManager(context)
         binding.rvReminds.adapter = adapter
         (binding.rvReminds.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { layout, offset ->
+            val percentage = abs(offset).toFloat() / layout.totalScrollRange
+            binding.toolbarContent.tvToolbar.alpha = percentage
+        })
     }
 
     override fun onDestroy() {

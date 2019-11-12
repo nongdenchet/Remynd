@@ -19,4 +19,5 @@
     <dimen name="size_5">28sp</dimen>
     <dimen name="size_6">32sp</dimen>
     <dimen name="size_7">36sp</dimen>
+    <dimen name="size_8">40sp</dimen>
 </resources>
