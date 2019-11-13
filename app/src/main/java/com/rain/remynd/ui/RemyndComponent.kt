@@ -3,6 +3,7 @@ package com.rain.remynd.ui
 import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.ui.details.RemyndDetailsDependency
 import com.rain.remynd.ui.list.RemyndListDependency
 import dagger.BindsInstance
 import dagger.Component
@@ -21,12 +22,12 @@ object RemyndModule {
     @Provides
     @JvmStatic
     fun provideFragmentFactory(component: RemyndComponent): FragmentFactory =
-        FragmentFactoryImpl(component)
+        RemyndFragmentFactoryImpl(component)
 }
 
 @Component(modules = [RemyndModule::class], dependencies = [RemyndDependency::class])
 @RemyndScope
-interface RemyndComponent : RemyndListDependency {
+interface RemyndComponent : RemyndListDependency, RemyndDetailsDependency {
 
     @Component.Factory
     interface Factory {

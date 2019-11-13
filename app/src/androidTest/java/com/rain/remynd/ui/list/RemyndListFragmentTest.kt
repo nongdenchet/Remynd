@@ -20,7 +20,6 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
-import com.rain.remynd.ui.FragmentFactoryImpl
 import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.recyclerViewCount
 import com.rain.remynd.ui.withRecyclerView
@@ -48,7 +47,7 @@ class RemyndListFragmentTest {
             .fallbackToDestructiveMigration()
             .build()
         remyndDao = db.dao()
-        factory = FragmentFactoryImpl(object : RemyndListDependency {
+        factory = MockFragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
             override fun resourceProvider(): ResourcesProvider =
                 ResourcesProviderImpl(context.resources)

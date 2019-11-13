@@ -24,15 +24,14 @@ import kotlin.math.abs
 class RemyndListFragment(
     private val dependency: RemyndListDependency
 ) : Fragment(), RemyndListView {
-    private lateinit var component: RemyndListComponent
     private lateinit var binding: FragmentRemyndListBinding
 
     @Inject
-    lateinit var remyndListAdapter: RemyndListAdapter
+    internal lateinit var remyndListAdapter: RemyndListAdapter
     @Inject
-    lateinit var presenter: RemyndListPresenter
+    internal lateinit var presenter: RemyndListPresenter
     @Inject
-    lateinit var lifecycleObservers: Set<@JvmSuppressWildcards LifecycleObserver>
+    internal lateinit var lifecycleObservers: Set<@JvmSuppressWildcards LifecycleObserver>
 
     companion object {
         fun tag(): String = RemyndListFragment::class.java.simpleName
@@ -40,9 +39,9 @@ class RemyndListFragment(
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        component = DaggerRemyndListComponent.factory()
+        DaggerRemyndListComponent.factory()
             .create(this, dependency)
-        component.inject(this)
+            .inject(this)
         lifecycleObservers.forEach { lifecycle.addObserver(it) }
     }
 
