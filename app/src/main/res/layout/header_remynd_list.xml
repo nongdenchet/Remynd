@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 
-        <TextView
+        <TextClock
             android:id="@+id/tvCurrentTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,11 +20,8 @@
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
             android:letterSpacing="0.05"
-            android:lines="1"
-            android:text="07:30"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="60sp" />
+            android:textSize="60sp"
+            tools:text="07:30" />
 
         <TextView
             android:id="@+id/tvTotal"
@@ -34,8 +32,8 @@
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
             android:lines="1"
-            android:text="Total 4 alarms active"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_2" />
+            android:textSize="@dimen/size_2"
+            tools:text="Total 4 alarms active" />
     </LinearLayout>
 </layout>

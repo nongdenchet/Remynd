@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
+import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.formatTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +22,8 @@ import java.util.Date
 @Suppress("EXPERIMENTAL_API_USAGE")
 class RemyndListPresenter(
     private val view: RemyndListView,
-    private val remyndDao: RemyndDao
+    private val remyndDao: RemyndDao,
+    private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
     private val tag = RemyndListPresenter::class.java.simpleName
     private val parentJob = Job()
@@ -67,12 +70,20 @@ class RemyndListPresenter(
                 .map { toViewModels(it) }
                 .collect {
                     Log.d(tag, Thread.currentThread().name + ": collect data")
+                    val activeCount = formatActiveCount(it)
                     scope.launch(Dispatchers.Main) {
                         Log.d(tag, Thread.currentThread().name + ": render data")
                         view.render(it)
+                        view.renderActiveCount(activeCount)
                     }
                 }
         }
+    }
+
+    private fun formatActiveCount(items: List<RemyndItemViewModel>): String {
+        val activeCount = items.count { it.active }
+
+        return resourcesProvider.getString(R.string.active_count, activeCount)
     }
 
     private fun toViewModels(entities: List<RemyndEntity>): List<RemyndItemViewModel> {

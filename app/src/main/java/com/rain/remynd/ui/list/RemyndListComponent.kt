@@ -2,6 +2,7 @@ package com.rain.remynd.ui.list
 
 import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.support.ResourcesProvider
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -26,10 +27,12 @@ object RemyndListModule {
     @RemyndListScope
     fun providePresenter(
         fragment: RemyndListFragment,
-        remyndDao: RemyndDao
+        remyndDao: RemyndDao,
+        resourcesProvider: ResourcesProvider
     ) = RemyndListPresenter(
         fragment,
-        remyndDao
+        remyndDao,
+        resourcesProvider
     )
 
     @Provides
@@ -62,4 +65,5 @@ interface RemyndListComponent {
 
 interface RemyndListDependency {
     fun remyndDao(): RemyndDao
+    fun resourceProvider(): ResourcesProvider
 }

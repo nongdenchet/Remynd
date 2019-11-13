@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Remynd</string>
     <string name="reminds">Reminds</string>
+    <string name="active_count">Total %1d alarms active</string>
 </resources>

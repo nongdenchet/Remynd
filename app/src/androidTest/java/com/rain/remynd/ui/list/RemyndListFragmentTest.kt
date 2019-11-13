@@ -18,6 +18,8 @@ import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
+import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.support.ResourcesProviderImpl
 import com.rain.remynd.ui.FragmentFactoryImpl
 import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.recyclerViewCount
@@ -41,14 +43,15 @@ class RemyndListFragmentTest {
 
     @Before
     fun setUp() {
-        db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext<Context>(),
-            RemyndDB::class.java
-        ).fallbackToDestructiveMigration()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(context, RemyndDB::class.java)
+            .fallbackToDestructiveMigration()
             .build()
         remyndDao = db.dao()
         factory = FragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
+            override fun resourceProvider(): ResourcesProvider =
+                ResourcesProviderImpl(context.resources)
         })
     }
 
@@ -78,6 +81,11 @@ class RemyndListFragmentTest {
             factory = factory,
             themeResId = R.style.AppTheme
         )
+
+        // Alarm count
+        execute {
+            onView(withId(R.id.tvTotal)).check(matches(withText("Total 1 alarms active")))
+        }
 
         // First item
         execute {
@@ -121,10 +129,16 @@ class RemyndListFragmentTest {
             themeResId = R.style.AppTheme
         )
 
+        // Before switch
         execute {
             onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
                 .check(matches(isNotChecked()))
         }
+        execute {
+            onView(withId(R.id.tvTotal)).check(matches(withText("Total 1 alarms active")))
+        }
+
+        // After switch
         execute {
             onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
                 .perform(click())
@@ -132,6 +146,9 @@ class RemyndListFragmentTest {
         execute {
             onView(withRecyclerView(R.id.rvReminds).atPositionOnView(0, R.id.sEnabled))
                 .check(matches(isChecked()))
+        }
+        execute {
+            onView(withId(R.id.tvTotal)).check(matches(withText("Total 2 alarms active")))
         }
     }
 

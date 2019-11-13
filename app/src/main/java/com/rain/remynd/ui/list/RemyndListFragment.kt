@@ -2,14 +2,20 @@ package com.rain.remynd.ui.list
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
+import com.rain.remynd.R
 import com.rain.remynd.databinding.FragmentRemyndListBinding
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -22,7 +28,7 @@ class RemyndListFragment(
     private lateinit var binding: FragmentRemyndListBinding
 
     @Inject
-    lateinit var adapter: RemyndListAdapter
+    lateinit var remyndListAdapter: RemyndListAdapter
     @Inject
     lateinit var presenter: RemyndListPresenter
     @Inject
@@ -51,9 +57,42 @@ class RemyndListFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvReminds.layoutManager = LinearLayoutManager(context)
-        binding.rvReminds.adapter = adapter
-        (binding.rvReminds.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
+        setUpRecyclerView()
+        setUpAppBar()
+        setUpClockView()
+    }
+
+    private fun setUpClockView() {
+        binding.headerContent.tvCurrentTime.run {
+            val hourSpan = SpannableString("HH").apply {
+                setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, R.color.colorSecondary)),
+                    0,
+                    length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            val minuteSpan = SpannableString(":mm").apply {
+                setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, R.color.white)),
+                    0,
+                    length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            format12Hour = TextUtils.concat(hourSpan, minuteSpan)
+        }
+    }
+
+    private fun setUpRecyclerView() {
+        binding.rvReminds.run {
+            layoutManager = LinearLayoutManager(context)
+            adapter = remyndListAdapter
+            (itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
+        }
+    }
+
+    private fun setUpAppBar() {
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { layout, offset ->
             val percentage = abs(offset).toFloat() / layout.totalScrollRange
             binding.toolbarContent.tvToolbar.alpha = percentage
@@ -65,7 +104,11 @@ class RemyndListFragment(
         lifecycleObservers.forEach { lifecycle.removeObserver(it) }
     }
 
-    override fun render(items: List<RemyndItemViewModel>) = adapter.submitList(items)
+    override fun render(items: List<RemyndItemViewModel>) = remyndListAdapter.submitList(items)
 
-    override fun itemEvents(): Flow<ItemEvent> = adapter.itemEvents()
+    override fun renderActiveCount(value: String) {
+        binding.headerContent.tvTotal.text = value
+    }
+
+    override fun itemEvents(): Flow<ItemEvent> = remyndListAdapter.itemEvents()
 }
