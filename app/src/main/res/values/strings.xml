@@ -2,4 +2,10 @@
     <string name="app_name">Remynd</string>
     <string name="reminds">Reminds</string>
     <string name="active_count">Total %1d alarms active</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="title">Title</string>
+    <string name="weekday">Weekday</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="remind_again">Remind again</string>
 </resources>

@@ -1,9 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/space_4">
 
+        <TextView
+            android:id="@+id/tvSelectedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_6"
+            android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
+            android:letterSpacing="0.05"
+            android:lines="1"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="07:30" />
+
+        <TextView
+            android:id="@+id/tvClock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1"
+            android:layout_marginTop="@dimen/space_1"
+            android:layout_marginBottom="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintStart_toEndOf="@+id/tvSelectedTime"
+            tools:text="AM" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/space_1"
+            android:layout_marginEnd="@dimen/space_1"
+            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintEnd_toStartOf="@id/sEnabled"
+            app:layout_constraintStart_toEndOf="@id/tvClock"
+            app:layout_constraintTop_toTopOf="@id/tvSelectedTime" />
+
+        <Switch
+            android:id="@+id/sEnabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvSelectedTime"
+            tools:checked="true" />
+
+        <LinearLayout
+            android:id="@+id/llDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSelectedTime">
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+
+            <include layout="@layout/item_remynd_date" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvWeekday"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            android:layout_marginEnd="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            android:text="@string/weekday"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toStartOf="@+id/sWeekday"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llDates" />
+
+        <Switch
+            android:id="@+id/sWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvWeekday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvWeekday"
+            tools:checked="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white_50"
+            app:layout_constraintTop_toBottomOf="@id/tvWeekday" />
+
+        <TextView
+            android:id="@+id/tvVibrate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            android:layout_marginEnd="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            android:text="@string/vibrate"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toStartOf="@+id/sVibrate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvWeekday" />
+
+        <Switch
+            android:id="@+id/sVibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvVibrate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvVibrate"
+            tools:checked="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white_50"
+            app:layout_constraintTop_toBottomOf="@id/tvVibrate" />
+
+        <TextView
+            android:id="@+id/tvRemind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            android:layout_marginEnd="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            android:text="@string/remind_again"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toStartOf="@+id/tvRemindValue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvVibrate" />
+
+        <TextView
+            android:id="@+id/tvRemindValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            tools:text="15 minutes"
+            app:layout_constraintBottom_toBottomOf="@id/tvRemind"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvRemind" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white_50"
+            app:layout_constraintTop_toBottomOf="@id/tvRemind" />
+
+        <EditText
+            android:id="@+id/edtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            android:autofillHints="@string/title"
+            android:backgroundTint="@color/white"
+            android:fontFamily="sans-serif"
+            android:hint="@string/title"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white_80"
+            android:textSize="@dimen/size_3"
+            android:textCursorDrawable="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRemind" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvSave"
+            app:layout_constraintTop_toBottomOf="@id/edtTitle" />
+
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/space_6"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_1"
+            android:background="@drawable/border_background_cancel"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:padding="@dimen/space_4"
+            android:text="@string/cancel"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvSave"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1"
+            android:background="@drawable/border_background_save"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:padding="@dimen/space_4"
+            android:text="@string/save"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvCancel" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
