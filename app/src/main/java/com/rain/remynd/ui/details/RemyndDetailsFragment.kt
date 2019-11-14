@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
 import javax.inject.Inject
 
-private const val REMYND_DETAILS_FORM = "REMYND_DETAILS_FORM"
+internal const val REMYND_ID = "REMYND_ID"
 
 class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : Fragment(),
     RemyndDetailsView {
@@ -17,6 +17,10 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
 
     @Inject
     internal lateinit var presenter: RemyndDetailsPresenter
+
+    companion object {
+        val tag: String = RemyndDetailsFragment::class.java.simpleName
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,19 +38,9 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        TODO("Implement this")
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter.bind(savedInstanceState?.getParcelable(REMYND_DETAILS_FORM))
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(REMYND_DETAILS_FORM, presenter.generateForm())
+        presenter.bind(arguments?.getLong(REMYND_ID))
     }
 
     override fun onDestroy() {

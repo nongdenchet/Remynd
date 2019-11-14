@@ -9,12 +9,12 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.formatTime
+import com.rain.remynd.ui.RemyndNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -23,23 +23,34 @@ import java.util.Date
 class RemyndListPresenter(
     private val view: RemyndListView,
     private val remyndDao: RemyndDao,
+    private val navigator: RemyndNavigator,
     private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
     private val tag = RemyndListPresenter::class.java.simpleName
     private val parentJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + parentJob)
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
-        Log.d(tag, "onCreate")
+    fun bind() {
+        Log.d(tag, "bind")
         observeItems()
+        observeAddClicks()
         observeItemEvents()
     }
 
+    private fun observeAddClicks() {
+        scope.launch(Dispatchers.Main) {
+            view.addRemyndClicks()
+                .debounce(300)
+                .collect {
+                    Log.d(tag, Thread.currentThread().name + ": showing form")
+                    navigator.showRemyndForm()
+                }
+        }
+    }
+
     private fun observeItemEvents() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Main) {
             view.itemEvents()
-                .distinctUntilChanged()
                 .debounce(300)
                 .collect {
                     Log.d(tag, Thread.currentThread().name + ": observe switch events")
@@ -53,14 +64,14 @@ class RemyndListPresenter(
 
     private fun openItem(id: Long) {
         Log.d(tag, Thread.currentThread().name + ": open $id")
-        scope.launch(Dispatchers.Main) {
-            // TODO: implement this
-        }
+        navigator.showRemyndDetails(id)
     }
 
-    private suspend fun updateItem(id: Long, active: Boolean) {
-        Log.d(tag, Thread.currentThread().name + ": switching $id, $active")
-        remyndDao.update(id, active)
+    private fun updateItem(id: Long, active: Boolean) {
+        scope.launch(Dispatchers.IO) {
+            Log.d(tag, Thread.currentThread().name + ": switching $id, $active")
+            remyndDao.update(id, active)
+        }
     }
 
     private fun observeItems() {
@@ -102,8 +113,8 @@ class RemyndListPresenter(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        Log.d(tag, "onDestroy")
+    fun unbind() {
+        Log.d(tag, "unbind")
         parentJob.cancel()
     }
 }

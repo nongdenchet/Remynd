@@ -2,7 +2,6 @@ package com.rain.remynd.ui.list
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.rain.remynd.ui.list.RemyndListFragment
 
 class MockFragmentFactoryImpl(
     private val dependency: RemyndListDependency

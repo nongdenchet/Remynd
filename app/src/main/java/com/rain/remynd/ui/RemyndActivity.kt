@@ -14,7 +14,6 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.AlarmReceiver
 import com.rain.remynd.support.dependency
-import com.rain.remynd.ui.list.RemyndListFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,9 +29,11 @@ class RemyndActivity : AppCompatActivity() {
     private val tag = RemyndActivity::class.java.simpleName
 
     @Inject
-    lateinit var remyndDao: RemyndDao
+    internal lateinit var remyndDao: RemyndDao
     @Inject
-    lateinit var fragmentFactory: FragmentFactory
+    internal lateinit var fragmentFactory: FragmentFactory
+    @Inject
+    internal lateinit var navigator: RemyndNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUpDependency()
@@ -40,12 +41,12 @@ class RemyndActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remynd)
         if (savedInstanceState == null) {
-            attachFragment()
             initialize()
         }
     }
 
     private fun initialize() {
+        navigator.showRemyndList()
         scope.launch(Dispatchers.IO) {
             val count = remyndDao.count()
             if (count == 0) {
@@ -74,16 +75,6 @@ class RemyndActivity : AppCompatActivity() {
         DaggerRemyndComponent.factory()
             .create(this, applicationContext.dependency(RemyndDependency::class))
             .inject(this)
-    }
-
-    private fun attachFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.main_container,
-                fragmentFactory.instantiate(classLoader, RemyndListFragment::class.java.name),
-                RemyndListFragment.tag()
-            )
-            .commit()
     }
 
     override fun onDestroy() {

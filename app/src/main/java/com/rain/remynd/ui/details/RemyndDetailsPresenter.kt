@@ -9,15 +9,11 @@ class RemyndDetailsPresenter(
     remyndDao: RemyndDao,
     resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
-    fun generateForm(): RemyndDetailsForm {
-        TODO("Implement this")
-    }
-
-    fun bind(form: RemyndDetailsForm?) {
-        TODO("Implement this")
+    fun bind(id: Long?) {
+        // TODO: implement this
     }
 
     fun unbind() {
-        TODO("Implement this")
+        // TODO: implement this
     }
 }

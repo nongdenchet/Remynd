@@ -5,9 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.ui.details.RemyndDetailsFragment
 import com.rain.remynd.ui.list.RemyndListFragment
 
-class RemyndFragmentFactoryImpl(
-    private val dependency: RemyndComponent
-) : FragmentFactory() {
+class RemyndFragmentFactory(private val dependency: RemyndComponent) : FragmentFactory() {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         return when (loadFragmentClass(classLoader, className)) {

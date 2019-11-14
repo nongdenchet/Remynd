@@ -29,6 +29,7 @@
             android:background="?selectableItemBackground"
             android:padding="@dimen/space_3"
             android:src="@drawable/ic_add"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 </layout>

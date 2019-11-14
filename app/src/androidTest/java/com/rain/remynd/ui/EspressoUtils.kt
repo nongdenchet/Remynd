@@ -8,7 +8,7 @@ fun execute(times: Int = 3, delay: Long = 1000, action: () -> Unit) {
        try {
            action()
            break
-       } catch (e: Exception) {
+       } catch (e: Throwable) {
            if (current >= times) throw e
            else current++
 

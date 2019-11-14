@@ -20,11 +20,14 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
+import com.rain.remynd.ui.MockRemyndNavigator
+import com.rain.remynd.ui.RemyndNavigator
 import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.recyclerViewCount
 import com.rain.remynd.ui.withRecyclerView
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -40,6 +43,8 @@ class RemyndListFragmentTest {
     private lateinit var db: RemyndDB
     private lateinit var remyndDao: RemyndDao
 
+    private val navigator = MockRemyndNavigator()
+
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -49,6 +54,7 @@ class RemyndListFragmentTest {
         remyndDao = db.dao()
         factory = MockFragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
+            override fun remyndNavigator(): RemyndNavigator = navigator
             override fun resourceProvider(): ResourcesProvider =
                 ResourcesProviderImpl(context.resources)
         })
@@ -121,6 +127,34 @@ class RemyndListFragmentTest {
     }
 
     @Test
+    fun testClickingOnAdd() {
+        mockData()
+        launchFragmentInContainer<RemyndListFragment>(
+            factory = factory,
+            themeResId = R.style.AppTheme
+        )
+
+        onView(withId(R.id.tvAdd)).perform(click())
+        execute {
+            assertEquals(1, navigator.showRemyndFormCount)
+        }
+    }
+
+    @Test
+    fun testClickingOnItem() {
+        mockData()
+        launchFragmentInContainer<RemyndListFragment>(
+            factory = factory,
+            themeResId = R.style.AppTheme
+        )
+
+        onView(withRecyclerView(R.id.rvReminds).atPosition(0)).perform(click())
+        execute {
+            assertEquals(1, navigator.showRemyndDetailsCount)
+        }
+    }
+
+    @Test
     fun testSwitchOffItem() {
         mockData()
         launchFragmentInContainer<RemyndListFragment>(
@@ -154,5 +188,6 @@ class RemyndListFragmentTest {
     @After
     fun tearDown() {
         db.close()
+        navigator.reset()
     }
 }

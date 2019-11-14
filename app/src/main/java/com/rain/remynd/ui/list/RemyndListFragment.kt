@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.rain.remynd.R
 import com.rain.remynd.databinding.FragmentRemyndListBinding
+import com.rain.remynd.support.clicks
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlin.math.abs
@@ -34,7 +35,7 @@ class RemyndListFragment(
     internal lateinit var lifecycleObservers: Set<@JvmSuppressWildcards LifecycleObserver>
 
     companion object {
-        fun tag(): String = RemyndListFragment::class.java.simpleName
+        val tag: String = RemyndListFragment::class.java.simpleName
     }
 
     override fun onAttach(context: Context) {
@@ -102,6 +103,13 @@ class RemyndListFragment(
         super.onDestroy()
         lifecycleObservers.forEach { lifecycle.removeObserver(it) }
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        presenter.bind()
+    }
+
+    override fun addRemyndClicks(): Flow<Unit> = binding.toolbarContent.tvAdd.clicks()
 
     override fun render(items: List<RemyndItemViewModel>) = remyndListAdapter.submitList(items)
 

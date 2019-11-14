@@ -22,7 +22,18 @@ object RemyndModule {
     @Provides
     @JvmStatic
     fun provideFragmentFactory(component: RemyndComponent): FragmentFactory =
-        RemyndFragmentFactoryImpl(component)
+        RemyndFragmentFactory(component)
+
+    @RemyndScope
+    @Provides
+    @JvmStatic
+    fun provideRemyndNavigator(
+        activity: RemyndActivity,
+        fragmentFactory: FragmentFactory
+    ): RemyndNavigator = RemyndNavigatorImpl(
+        activity,
+        fragmentFactory
+    )
 }
 
 @Component(modules = [RemyndModule::class], dependencies = [RemyndDependency::class])
