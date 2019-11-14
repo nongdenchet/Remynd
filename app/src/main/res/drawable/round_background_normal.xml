@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/white_50">
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:shape="oval">
 
-    <item>
-        <shape
-            android:gravity="center"
-            android:shape="oval">
-
-            <solid android:color="@color/colorPrimary" />
-        </shape>
-    </item>
-</ripple>
+    <solid android:color="@color/colorPrimary" />
+</shape>

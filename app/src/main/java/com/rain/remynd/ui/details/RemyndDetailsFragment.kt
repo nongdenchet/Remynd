@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
+import com.rain.remynd.support.observe
+import com.rain.remynd.view.DateItem
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal const val REMYND_ID = "REMYND_ID"
@@ -47,4 +50,6 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         presenter.unbind()
         super.onDestroy()
     }
+
+    override fun observeDates(): Flow<List<DateItem>> = binding.llDates.observe()
 }
