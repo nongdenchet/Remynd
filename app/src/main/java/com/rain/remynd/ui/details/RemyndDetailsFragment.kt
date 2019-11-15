@@ -51,5 +51,7 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         super.onDestroy()
     }
 
+    override fun observeRepeat(): Flow<Boolean> = binding.sRepeat.observe()
+
     override fun observeDates(): Flow<List<DateItem>> = binding.llDates.observe()
 }

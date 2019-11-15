@@ -10,6 +10,8 @@
     <dimen name="space_6">24dp</dimen>
     <dimen name="space_7">28dp</dimen>
     <dimen name="space_8">32dp</dimen>
+    <dimen name="space_9">36dp</dimen>
+    <dimen name="space_10">40dp</dimen>
 
     <!-- Font size -->
     <dimen name="size_1">12sp</dimen>

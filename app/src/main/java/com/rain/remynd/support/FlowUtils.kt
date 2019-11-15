@@ -3,6 +3,7 @@
 package com.rain.remynd.support
 
 import android.view.View
+import android.widget.Switch
 import com.rain.remynd.view.DateItem
 import com.rain.remynd.view.WeekDatePicker
 import kotlinx.coroutines.channels.awaitClose
@@ -28,4 +29,15 @@ fun WeekDatePicker.observe(): Flow<List<DateItem>> = callbackFlow {
         this.offer(it)
     }
     awaitClose { this@observe.setOnDataChangeListener(null) }
+}
+
+/**
+ * Observe checked changes
+ */
+fun Switch.observe(): Flow<Boolean> = callbackFlow {
+    offer(isChecked)
+    this@observe.setOnCheckedChangeListener { _, isChecked ->
+        this.offer(isChecked)
+    }
+    awaitClose { this@observe.setOnCheckedChangeListener(null) }
 }

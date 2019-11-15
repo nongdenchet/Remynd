@@ -16,17 +16,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/space_6"
+            android:layout_marginTop="@dimen/space_10"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
             android:letterSpacing="0.05"
             android:lines="1"
+            android:text="07:30"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/size_8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="07:30" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvClock"
@@ -38,12 +38,12 @@
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
             android:lines="1"
+            android:text="AM"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/size_2"
             app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
-            app:layout_constraintStart_toEndOf="@+id/tvSelectedTime"
-            tools:text="AM" />
+            app:layout_constraintStart_toEndOf="@+id/tvSelectedTime" />
 
         <View
             android:layout_width="0dp"
@@ -59,6 +59,7 @@
             android:id="@+id/sEnabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvSelectedTime"
@@ -74,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvSelectedTime" />
 
         <TextView
-            android:id="@+id/tvWeekday"
+            android:id="@+id/tvRepeat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_6"
@@ -85,28 +86,29 @@
             android:lines="1"
             android:paddingTop="@dimen/space_4"
             android:paddingBottom="@dimen/space_4"
-            android:text="@string/weekday"
+            android:text="@string/repeat"
             android:textColor="@color/white"
             android:textSize="@dimen/size_3"
-            app:layout_constraintEnd_toStartOf="@+id/sWeekday"
+            app:layout_constraintEnd_toStartOf="@+id/sRepeat"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llDates" />
 
         <Switch
-            android:id="@+id/sWeekday"
+            android:id="@+id/sRepeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/tvWeekday"
+            android:checked="true"
+            app:layout_constraintBottom_toBottomOf="@id/tvRepeat"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvWeekday"
+            app:layout_constraintTop_toTopOf="@id/tvRepeat"
             tools:checked="true" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/white_50"
-            app:layout_constraintTop_toBottomOf="@id/tvWeekday" />
+            app:layout_constraintTop_toBottomOf="@id/tvRepeat" />
 
         <TextView
             android:id="@+id/tvVibrate"
@@ -125,7 +127,7 @@
             android:textSize="@dimen/size_3"
             app:layout_constraintEnd_toStartOf="@+id/sVibrate"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvWeekday" />
+            app:layout_constraintTop_toBottomOf="@id/tvRepeat" />
 
         <Switch
             android:id="@+id/sVibrate"
@@ -167,12 +169,12 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/space_4"
             android:paddingBottom="@dimen/space_4"
+            android:text="15 minutes"
             android:textColor="@color/white"
             android:textSize="@dimen/size_3"
             app:layout_constraintBottom_toBottomOf="@id/tvRemind"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvRemind"
-            tools:text="15 minutes" />
+            app:layout_constraintTop_toTopOf="@id/tvRemind" />
 
         <View
             android:layout_width="match_parent"

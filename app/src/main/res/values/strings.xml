@@ -5,7 +5,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="title">Title</string>
-    <string name="weekday">Weekday</string>
+    <string name="repeat">Repeat</string>
     <string name="vibrate">Vibrate</string>
     <string name="remind_again">Remind again</string>
 </resources>

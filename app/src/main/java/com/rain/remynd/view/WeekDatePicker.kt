@@ -69,7 +69,7 @@ private val indexToDate = mapOf(
 )
 
 private val defaultItems: List<DateItem> = Array(7) {
-    DateItem(Calendar.SUNDAY + it, false)
+    DateItem(Calendar.SUNDAY + it, true)
 }.toList()
 
 class WeekDatePicker @JvmOverloads constructor(
