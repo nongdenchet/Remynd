@@ -11,6 +11,11 @@ android {
         enabled = true
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -51,9 +56,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.fragment:fragment-ktx:1.1.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 
     // Lifecycle
     implementation 'androidx.lifecycle:lifecycle-runtime:2.1.0'
+    //noinspection LifecycleAnnotationProcessorWithJava8
     kapt 'androidx.lifecycle:lifecycle-compiler:2.1.0'
 
     // Room

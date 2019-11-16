@@ -19,6 +19,9 @@ data class RemyndEntity(
     @ColumnInfo(name = "active")
     val active: Boolean,
 
+    @ColumnInfo(name = "vibrate")
+    val vibrate: Boolean,
+
     @ColumnInfo(name = "interval")
     val interval: Long? = null
 )

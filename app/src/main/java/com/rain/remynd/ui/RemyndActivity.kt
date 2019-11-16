@@ -55,14 +55,16 @@ class RemyndActivity : AppCompatActivity() {
                     RemyndEntity(
                         content = "Drink Water",
                         triggerAt = Date().time,
-                        active = false
+                        active = false,
+                        vibrate = false
                     )
                 )
                 remyndDao.insert(
                     RemyndEntity(
                         content = "Test Code",
                         triggerAt = Date().time + TimeUnit.DAYS.toMillis(1),
-                        active = true
+                        active = true,
+                        vibrate = false
                     )
                 )
             } else {

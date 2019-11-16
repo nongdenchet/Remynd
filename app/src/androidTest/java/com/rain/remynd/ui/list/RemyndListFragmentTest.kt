@@ -66,14 +66,16 @@ class RemyndListFragmentTest {
                 RemyndEntity(
                     content = "Drink Water",
                     triggerAt = Date().time,
-                    active = false
+                    active = false,
+                    vibrate = false
                 )
             )
             remyndDao.insert(
                 RemyndEntity(
                     content = "Test Code",
                     triggerAt = Date().time,
-                    active = true
+                    active = true,
+                    vibrate = false
                 )
             )
         }

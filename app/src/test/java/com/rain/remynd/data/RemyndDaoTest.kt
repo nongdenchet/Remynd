@@ -27,7 +27,8 @@ class RemyndDaoTest {
         content = "Drink Water",
         triggerAt = 1000000,
         interval = 60 * 1000,
-        active = true
+        active = true,
+        vibrate = false
     )
 
     @Before
@@ -54,7 +55,8 @@ class RemyndDaoTest {
                             content = "Drink Water",
                             triggerAt = 1000000,
                             interval = 60 * 1000,
-                            active = true
+                            active = true,
+                            vibrate = false
                         ),
                         it[0]
                     )
@@ -70,7 +72,8 @@ class RemyndDaoTest {
                 content = "Drink Water",
                 triggerAt = 1000000,
                 interval = 60 * 1000,
-                active = true
+                active = true,
+                vibrate = false
             )
             assertEquals(1, dao.insert(data))
 
@@ -96,7 +99,8 @@ class RemyndDaoTest {
                 content = "Test",
                 triggerAt = 1000000,
                 interval = 60 * 1000,
-                active = true
+                active = true,
+                vibrate = false
             )
             assertEquals(1, dao.update(data))
             dao.observe()
@@ -125,7 +129,8 @@ class RemyndDaoTest {
                             content = "Drink Water",
                             triggerAt = 1000000,
                             interval = 60 * 1000,
-                            active = false
+                            active = false,
+                            vibrate = false
                         ),
                         it[0]
                     )
