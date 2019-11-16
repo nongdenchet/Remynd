@@ -158,10 +158,10 @@
             android:paddingBottom="@dimen/space_4"
             android:textColor="@color/white"
             android:textSize="@dimen/size_3"
+            android:text="@string/none"
             app:layout_constraintBottom_toBottomOf="@id/tvRemind"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvRemind"
-            tools:text="15 minutes" />
+            app:layout_constraintTop_toTopOf="@id/tvRemind" />
 
         <View
             android:layout_width="match_parent"

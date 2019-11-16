@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
 import com.rain.remynd.support.formatTime
@@ -44,6 +45,16 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
     ): View? {
         binding = FragmentRemyndDetailsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.edtTitle.doOnTextChanged { text, _, _, _ ->
+            presenter.setContent(text?.toString() ?: "")
+        }
+        binding.sVibrate.setOnCheckedChangeListener { _, isChecked ->
+            presenter.setVibrate(isChecked)
+        }
     }
 
     private fun updateTimePicker(calendar: Calendar) {

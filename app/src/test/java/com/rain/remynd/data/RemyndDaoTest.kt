@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,6 +62,21 @@ class RemyndDaoTest {
                         it[0]
                     )
                 }
+        }
+    }
+
+    @Test
+    fun getByID() {
+        runBlocking {
+            assertEquals(1, dao.insert(data))
+            assertEquals(data.copy(id = 1), dao.get(1))
+        }
+    }
+
+    @Test
+    fun getWhenNotFound() {
+        runBlocking {
+            assertNull(dao.get(1))
         }
     }
 

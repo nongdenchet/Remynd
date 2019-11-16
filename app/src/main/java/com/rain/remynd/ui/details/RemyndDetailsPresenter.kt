@@ -8,11 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
@@ -23,55 +23,64 @@ class RemyndDetailsPresenter(
     private val remyndDao: RemyndDao
 ) : LifecycleObserver {
     private val tag = RemyndDetailsPresenter::class.java.simpleName
+    private val reducer = RemyndReducer()
     private val parentJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + parentJob)
     private val form = BroadcastChannel<RemyndForm>(Channel.CONFLATED)
+    private val actions = BroadcastChannel<RemyndFormAction>(1)
 
     fun bind(id: Long?, state: RemyndForm?) {
         Log.d(tag, "bind")
         scope.launch(Dispatchers.IO) {
-            form.send(initForm(id, state))
+            val init = initForm(id, state)
+            scope.launch(Dispatchers.Main) {
+                actions.asFlow()
+                    .distinctUntilChanged()
+                    .scan(init) { prev, action ->
+                        Log.d(tag, "${Thread.currentThread().name} reducing: $action")
+                        reducer.reduce(prev, action)
+                    }
+                    .collect {
+                        Log.d(tag, "${Thread.currentThread().name} send form: $it")
+                        form.send(it)
+                    }
+            }
         }
         scope.launch(Dispatchers.Main) {
-            form.consumeEach { view.render(it) }
+            form.asFlow()
+                .distinctUntilChanged()
+                .collect {
+                    Log.d(tag, "${Thread.currentThread().name} render: $it")
+                    view.render(it)
+                }
         }
     }
 
     fun setDate(year: Int, monthOfYear: Int, dayOfMonth: Int) {
-
         Log.d(tag, "Date picked: $year, $monthOfYear, $dayOfMonth")
         scope.launch(Dispatchers.Main) {
-            form.asFlow()
-                .take(1)
-                .collect { curr ->
-                    val dateConfig = (curr.dateConfig as DateConfig.SingleDate).let {
-                        val newDate = Calendar.getInstance()
-                        newDate.timeInMillis = it.date.timeInMillis
-                        newDate.set(Calendar.YEAR, year)
-                        newDate.set(Calendar.MONTH, monthOfYear)
-                        newDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                        DateConfig.SingleDate(newDate)
-                    }
-                    form.send(curr.copy(dateConfig = dateConfig))
-                }
+            actions.send(RemyndFormAction.UpdateDate(year, monthOfYear, dayOfMonth))
+        }
+    }
+
+    fun setContent(content: String) {
+        Log.d(tag, "Set content: $content")
+        scope.launch(Dispatchers.Main) {
+            actions.send(RemyndFormAction.UpdateContent(content))
+        }
+    }
+
+    fun setVibrate(checked: Boolean) {
+        Log.d(tag, "Set vibrate: $checked")
+        scope.launch(Dispatchers.Main) {
+            actions.send(RemyndFormAction.UpdateVibrate(checked))
         }
     }
 
     fun setTime(hourOfDay: Int, minute: Int) {
         Log.d(tag, "Time picked: $hourOfDay, $minute")
         scope.launch(Dispatchers.Main) {
-            form.asFlow()
-                .take(1)
-                .collect { curr ->
-                    val dateConfig = (curr.dateConfig as DateConfig.SingleDate).let {
-                        val newDate = Calendar.getInstance()
-                        newDate.timeInMillis = it.date.timeInMillis
-                        newDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                        newDate.set(Calendar.MINUTE, minute)
-                        DateConfig.SingleDate(newDate)
-                    }
-                    form.send(curr.copy(dateConfig = dateConfig))
-                }
+            actions.send(RemyndFormAction.UpdateTime(hourOfDay, minute))
         }
     }
 
@@ -80,35 +89,47 @@ class RemyndDetailsPresenter(
     }
 
     private suspend fun initForm(id: Long?, state: RemyndForm?): RemyndForm {
+        Log.d(tag, "${Thread.currentThread().name} initForm: $id, $state")
         if (state != null) {
             return state
         }
 
-        if (id == null) {
-            val tomorrow = Calendar.getInstance()
-            tomorrow.add(Calendar.DATE, 1)
-            tomorrow.set(Calendar.HOUR_OF_DAY, 19)
-            tomorrow.set(Calendar.MINUTE, 30)
-            return RemyndForm(
-                content = "",
-                dateConfig = DateConfig.SingleDate(tomorrow),
-                enabled = true,
-                vibrate = false,
-                interval = null
-            )
+        if (id != null) {
+            return restoreForm(id) ?: defaultForm()
         }
 
-        return remyndDao.get(id).let {
+        return defaultForm()
+    }
+
+    private suspend fun restoreForm(id: Long): RemyndForm? {
+        val entity = remyndDao.get(id)
+        if (entity != null) {
             val time = Calendar.getInstance()
-            time.timeInMillis = it.triggerAt
-            RemyndForm(
-                content = it.content,
+            time.timeInMillis = entity.triggerAt
+            return RemyndForm(
+                content = entity.content,
                 dateConfig = DateConfig.SingleDate(time),
-                enabled = it.active,
+                enabled = entity.active,
                 vibrate = false,
-                interval = it.interval
+                interval = entity.interval
             )
         }
+        return null
+    }
+
+    private fun defaultForm(): RemyndForm {
+        val tomorrow = Calendar.getInstance().apply {
+            add(Calendar.DATE, 1)
+            set(Calendar.HOUR_OF_DAY, 19)
+            set(Calendar.MINUTE, 30)
+        }
+        return RemyndForm(
+            content = "",
+            dateConfig = DateConfig.SingleDate(tomorrow),
+            enabled = true,
+            vibrate = false,
+            interval = null
+        )
     }
 
     fun unbind() {

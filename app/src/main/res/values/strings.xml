@@ -8,4 +8,5 @@
     <string name="repeat">Repeat</string>
     <string name="vibrate">Vibrate</string>
     <string name="remind_again">Remind again</string>
+    <string name="none">None</string>
 </resources>

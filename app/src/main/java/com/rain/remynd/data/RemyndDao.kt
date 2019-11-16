@@ -18,7 +18,7 @@ interface RemyndDao {
     suspend fun update(id: Long, active: Boolean): Int
 
     @Query("SELECT * FROM remynd_table WHERE id = :id")
-    suspend fun get(id: Long): RemyndEntity
+    suspend fun get(id: Long): RemyndEntity?
 
     @Insert
     suspend fun insert(data: RemyndEntity): Long
