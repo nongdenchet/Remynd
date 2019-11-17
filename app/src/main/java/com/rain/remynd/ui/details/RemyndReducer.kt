@@ -1,12 +1,15 @@
 package com.rain.remynd.ui.details
 
+import com.rain.remynd.view.DateItem
 import java.util.Calendar
 
 sealed class RemyndFormAction {
     data class UpdateContent(val value: String) : RemyndFormAction()
     data class UpdateVibrate(val value: Boolean) : RemyndFormAction()
+    data class UpdateEnabled(val value: Boolean) : RemyndFormAction()
     data class UpdateDate(val year: Int, val month: Int, val day: Int) : RemyndFormAction()
     data class UpdateTime(val hourOfDay: Int, val minute: Int) : RemyndFormAction()
+    data class UpdateItems(val items: List<DateItem>) : RemyndFormAction()
 }
 
 class RemyndReducer {
@@ -16,7 +19,45 @@ class RemyndReducer {
             is RemyndFormAction.UpdateDate -> updateDate(prev, action)
             is RemyndFormAction.UpdateTime -> updateTime(prev, action)
             is RemyndFormAction.UpdateVibrate -> updateVibrate(prev, action)
+            is RemyndFormAction.UpdateEnabled -> updateEnabled(prev, action)
+            is RemyndFormAction.UpdateItems -> updateDateItems(prev, action)
         }
+    }
+
+    private fun updateDateItems(
+        prev: RemyndForm,
+        action: RemyndFormAction.UpdateItems
+    ): RemyndForm {
+        val daysOfWeek = action.items
+            .filter { it.checked }
+            .map { it.dateInWeek }
+        val dateConfig: DateConfig = when (val curr = prev.dateConfig) {
+            is DateConfig.SingleDate -> {
+                if (daysOfWeek.isNotEmpty()) {
+                    DateConfig.RepeatDate(
+                        hour = curr.date.get(Calendar.HOUR_OF_DAY),
+                        minute = curr.date.get(Calendar.MINUTE),
+                        daysOfWeek = daysOfWeek
+                    )
+                } else {
+                    curr
+                }
+            }
+            is DateConfig.RepeatDate -> {
+                if (daysOfWeek.isNotEmpty()) {
+                    curr.copy(daysOfWeek = daysOfWeek)
+                } else {
+                    DateConfig.SingleDate(
+                        Calendar.getInstance().apply {
+                            add(Calendar.DATE, 1)
+                            set(Calendar.HOUR_OF_DAY, 19)
+                            set(Calendar.MINUTE, 30)
+                        }
+                    )
+                }
+            }
+        }
+        return prev.copy(dateConfig = dateConfig)
     }
 
     private fun updateVibrate(
@@ -31,17 +72,34 @@ class RemyndReducer {
         }
     }
 
+    private fun updateEnabled(
+        prev: RemyndForm,
+        action: RemyndFormAction.UpdateEnabled
+    ): RemyndForm {
+        val vibrate = action.value
+        return if (prev.enabled == vibrate) {
+            prev
+        } else {
+            prev.copy(enabled = vibrate)
+        }
+    }
+
     private fun updateTime(
         prev: RemyndForm,
         action: RemyndFormAction.UpdateTime
     ): RemyndForm {
         val (hour, minute) = action
-        val dateConfig = (prev.dateConfig as DateConfig.SingleDate).let {
-            val newDate = Calendar.getInstance()
-            newDate.timeInMillis = it.date.timeInMillis
-            newDate.set(Calendar.HOUR_OF_DAY, hour)
-            newDate.set(Calendar.MINUTE, minute)
-            DateConfig.SingleDate(newDate)
+        val dateConfig = when (val curr = prev.dateConfig) {
+            is DateConfig.SingleDate -> {
+                val newDate = Calendar.getInstance()
+                newDate.timeInMillis = curr.date.timeInMillis
+                newDate.set(Calendar.HOUR_OF_DAY, hour)
+                newDate.set(Calendar.MINUTE, minute)
+                DateConfig.SingleDate(newDate)
+            }
+            is DateConfig.RepeatDate -> {
+                curr.copy(hour = hour, minute = minute)
+            }
         }
         return prev.copy(dateConfig = dateConfig)
     }
@@ -51,13 +109,24 @@ class RemyndReducer {
         action: RemyndFormAction.UpdateDate
     ): RemyndForm {
         val (year, month, day) = action
-        val dateConfig = (prev.dateConfig as DateConfig.SingleDate).let {
-            val newDate = Calendar.getInstance()
-            newDate.timeInMillis = it.date.timeInMillis
-            newDate.set(Calendar.YEAR, year)
-            newDate.set(Calendar.MONTH, month)
-            newDate.set(Calendar.DAY_OF_MONTH, day)
-            DateConfig.SingleDate(newDate)
+        val dateConfig = when (val curr = prev.dateConfig) {
+            is DateConfig.SingleDate -> {
+                val newDate = Calendar.getInstance()
+                newDate.timeInMillis = curr.date.timeInMillis
+                newDate.set(Calendar.YEAR, year)
+                newDate.set(Calendar.MONTH, month)
+                newDate.set(Calendar.DAY_OF_MONTH, day)
+                DateConfig.SingleDate(newDate)
+            }
+            is DateConfig.RepeatDate -> {
+                val newDate = Calendar.getInstance()
+                newDate.set(Calendar.YEAR, year)
+                newDate.set(Calendar.MONTH, month)
+                newDate.set(Calendar.DAY_OF_MONTH, day)
+                newDate.set(Calendar.HOUR_OF_DAY, curr.hour)
+                newDate.set(Calendar.MINUTE, curr.minute)
+                DateConfig.SingleDate(newDate)
+            }
         }
         return prev.copy(dateConfig = dateConfig)
     }

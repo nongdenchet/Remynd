@@ -2,7 +2,10 @@ package com.rain.remynd.ui.details
 
 import android.util.Log
 import androidx.lifecycle.LifecycleObserver
+import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.view.DateItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,8 +13,10 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -20,14 +25,19 @@ import java.util.Calendar
 @Suppress("EXPERIMENTAL_API_USAGE")
 class RemyndDetailsPresenter(
     private val view: RemyndDetailsView,
-    private val remyndDao: RemyndDao
+    private val remyndDao: RemyndDao,
+    private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
-    private val tag = RemyndDetailsPresenter::class.java.simpleName
     private val reducer = RemyndReducer()
+    private val mapper = RemyndDetailsViewModelMapper()
     private val parentJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + parentJob)
     private val form = BroadcastChannel<RemyndForm>(Channel.CONFLATED)
     private val actions = BroadcastChannel<RemyndFormAction>(1)
+
+    companion object {
+        private val tag = RemyndDetailsPresenter::class.java.simpleName
+    }
 
     fun bind(id: Long?, state: RemyndForm?) {
         Log.d(tag, "bind")
@@ -49,10 +59,16 @@ class RemyndDetailsPresenter(
         scope.launch(Dispatchers.Main) {
             form.asFlow()
                 .distinctUntilChanged()
+                .map { mapper.toViewModel(it) }
                 .collect {
                     Log.d(tag, "${Thread.currentThread().name} render: $it")
                     view.render(it)
                 }
+        }
+        scope.launch(Dispatchers.Main) {
+            view.contentChanges()
+                .debounce(300)
+                .collect { setContent(it) }
         }
     }
 
@@ -63,7 +79,7 @@ class RemyndDetailsPresenter(
         }
     }
 
-    fun setContent(content: String) {
+    private fun setContent(content: String) {
         Log.d(tag, "Set content: $content")
         scope.launch(Dispatchers.Main) {
             actions.send(RemyndFormAction.UpdateContent(content))
@@ -77,10 +93,24 @@ class RemyndDetailsPresenter(
         }
     }
 
+    fun setEnabled(checked: Boolean) {
+        Log.d(tag, "Set enabled: $checked")
+        scope.launch(Dispatchers.Main) {
+            actions.send(RemyndFormAction.UpdateEnabled(checked))
+        }
+    }
+
     fun setTime(hourOfDay: Int, minute: Int) {
         Log.d(tag, "Time picked: $hourOfDay, $minute")
         scope.launch(Dispatchers.Main) {
             actions.send(RemyndFormAction.UpdateTime(hourOfDay, minute))
+        }
+    }
+
+    fun setDateItems(items: List<DateItem>) {
+        Log.d(tag, "Date items picked: $items")
+        scope.launch(Dispatchers.Main) {
+            actions.send(RemyndFormAction.UpdateItems(items))
         }
     }
 
@@ -106,11 +136,27 @@ class RemyndDetailsPresenter(
         if (entity != null) {
             val time = Calendar.getInstance()
             time.timeInMillis = entity.triggerAt
+
+            val dateConfig = if (!entity.daysOfWeek.isNullOrEmpty()) {
+                val daysOfWeek = entity.daysOfWeek
+                    .split(";")
+                    .mapNotNull { it.toIntOrNull() }
+
+                DateConfig.RepeatDate(
+                    hour = time.get(Calendar.HOUR_OF_DAY),
+                    minute = time.get(Calendar.MINUTE),
+                    daysOfWeek = daysOfWeek
+                )
+            } else {
+                DateConfig.SingleDate(time)
+            }
+
             return RemyndForm(
+                id = entity.id,
                 content = entity.content,
-                dateConfig = DateConfig.SingleDate(time),
+                dateConfig = dateConfig,
                 enabled = entity.active,
-                vibrate = false,
+                vibrate = entity.vibrate,
                 interval = entity.interval
             )
         }
@@ -124,6 +170,7 @@ class RemyndDetailsPresenter(
             set(Calendar.MINUTE, 30)
         }
         return RemyndForm(
+            id = null,
             content = "",
             dateConfig = DateConfig.SingleDate(tomorrow),
             enabled = true,
@@ -135,5 +182,25 @@ class RemyndDetailsPresenter(
     fun unbind() {
         Log.d(tag, "unbind")
         parentJob.cancel()
+    }
+
+    fun save() {
+        Log.d(tag, "save")
+        scope.launch(Dispatchers.IO) {
+            val form = form.asFlow().first()
+            val entity = mapper.toEntity(form)
+            if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
+                scope.launch(Dispatchers.Main) {
+                    view.showError(resourcesProvider.getString(R.string.time_past_error))
+                }
+                return@launch
+            }
+
+            if (entity.id != 0L) remyndDao.update(entity)
+            else remyndDao.insert(entity)
+            scope.launch(Dispatchers.Main) {
+                view.goBack()
+            }
+        }
     }
 }

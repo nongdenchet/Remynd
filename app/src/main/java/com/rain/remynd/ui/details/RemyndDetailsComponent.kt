@@ -20,10 +20,12 @@ object RemyndDetailsModule {
     @RemyndDetailsScope
     fun providePresenter(
         fragment: RemyndDetailsFragment,
-        remyndDao: RemyndDao
+        remyndDao: RemyndDao,
+        resourcesProvider: ResourcesProvider
     ) = RemyndDetailsPresenter(
         fragment,
-        remyndDao
+        remyndDao,
+        resourcesProvider
     )
 }
 

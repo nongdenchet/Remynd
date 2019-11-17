@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.doOnTextChanged
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
-import com.rain.remynd.support.formatTime
-import com.rain.remynd.support.observe
-import com.rain.remynd.view.DateItem
+import com.rain.remynd.support.text
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.coroutines.flow.Flow
-import java.util.Calendar
 import javax.inject.Inject
 
 internal const val REMYND_ID = "REMYND_ID"
@@ -49,49 +46,64 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.edtTitle.doOnTextChanged { text, _, _, _ ->
-            presenter.setContent(text?.toString() ?: "")
-        }
         binding.sVibrate.setOnCheckedChangeListener { _, isChecked ->
             presenter.setVibrate(isChecked)
         }
+        binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
+            presenter.setEnabled(isChecked)
+        }
+        binding.llDates.setOnDataChangeListener { presenter.setDateItems(it) }
+        binding.tvCancel.setOnClickListener { goBack() }
+        binding.tvSave.setOnClickListener { presenter.save() }
     }
 
-    private fun updateTimePicker(calendar: Calendar) {
-        binding.tvClock.text = formatTime("a", calendar.time)
-        binding.tvSelectedTime.text = formatTime("hh:mm", calendar.time)
+    override fun goBack() {
+        fragmentManager?.popBackStack()
+    }
+
+    private fun updateTimePicker(timeInfo: TimeInfo) {
+        binding.tvClock.text = timeInfo.clock
+        binding.tvSelectedTime.text = timeInfo.displayTime
         binding.tvSelectedTime.setOnClickListener {
             val dpd = TimePickerDialog.newInstance(
                 { _, hourOfDay, minute, _ ->
                     presenter.setTime(hourOfDay, minute)
                 },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
+                timeInfo.hour,
+                timeInfo.minute,
                 false
             )
-            dpd.show(fragmentManager!!, TimePickerDialog::class.java.name)
+            fragmentManager?.run {
+                dpd.show(this, TimePickerDialog::class.java.simpleName)
+            }
         }
     }
 
-    private fun updateDatePicker(calendar: Calendar) {
-        binding.tvDateInfo.text = formatTime("EEE, dd MMM", calendar.time)
+    private fun updateDatePicker(dateInfo: DateInfo) {
+        binding.tvDateInfo.text = dateInfo.displayDate
         binding.ivCalendar.setOnClickListener {
             val dpd = DatePickerDialog.newInstance(
                 { _, year, monthOfYear, dayOfMonth ->
                     presenter.setDate(year, monthOfYear, dayOfMonth)
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                dateInfo.year,
+                dateInfo.month,
+                dateInfo.day
             )
-            dpd.show(fragmentManager!!, DatePickerDialog::class.java.simpleName)
+            fragmentManager?.run {
+                dpd.show(this, DatePickerDialog::class.java.simpleName)
+            }
         }
     }
 
-    override fun render(form: RemyndForm) {
-        val date = (form.dateConfig as DateConfig.SingleDate).date
-        updateDatePicker(date)
-        updateTimePicker(date)
+    override fun render(vm: RemyndDetailsViewModel) {
+        updateDatePicker(vm.dateInfo)
+        updateTimePicker(vm.timeInfo)
+        binding.sVibrate.isChecked = vm.vibrate
+        binding.sEnabled.isChecked = vm.enabled
+        binding.edtTitle.setText(vm.content)
+        binding.edtTitle.setSelection(vm.content.length)
+        binding.llDates.updateDates(vm.dateItems)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -107,10 +119,16 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         outState.putParcelable(REMYND_FORM, presenter.currentForm())
     }
 
+    override fun contentChanges(): Flow<String> = binding.edtTitle.text()
+
+    override fun showError(content: String) {
+        context?.run {
+            Toast.makeText(this, content, Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onDestroy() {
         presenter.unbind()
         super.onDestroy()
     }
-
-    override fun observeDates(): Flow<List<DateItem>> = binding.llDates.observe()
 }

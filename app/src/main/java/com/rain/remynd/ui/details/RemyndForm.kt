@@ -6,6 +6,7 @@ import java.util.Calendar
 
 @Parcelize
 data class RemyndForm(
+    val id: Long?,
     val content: String,
     val dateConfig: DateConfig,
     val enabled: Boolean,
@@ -19,9 +20,8 @@ sealed class DateConfig : Parcelable {
 
     @Parcelize
     data class RepeatDate(
-        val hourOfDay: Int,
+        val hour: Int,
         val minute: Int,
-        val second: Int,
         val daysOfWeek: List<Int>
     ) : DateConfig()
 }

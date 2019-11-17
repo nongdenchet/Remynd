@@ -22,6 +22,9 @@ data class RemyndEntity(
     @ColumnInfo(name = "vibrate")
     val vibrate: Boolean,
 
+    @ColumnInfo(name = "daysOfWeek")
+    val daysOfWeek: String? = null,
+
     @ColumnInfo(name = "interval")
     val interval: Long? = null
 )
