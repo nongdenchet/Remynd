@@ -1,6 +1,7 @@
 package com.rain.remynd.ui.details
 
 import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.support.ResourcesProvider
 import dagger.BindsInstance
 import dagger.Component
@@ -21,10 +22,12 @@ object RemyndDetailsModule {
     fun providePresenter(
         fragment: RemyndDetailsFragment,
         remyndDao: RemyndDao,
+        alarmScheduler: AlarmScheduler,
         resourcesProvider: ResourcesProvider
     ) = RemyndDetailsPresenter(
         fragment,
         remyndDao,
+        alarmScheduler,
         resourcesProvider
     )
 }
@@ -47,4 +50,5 @@ interface RemyndDetailsComponent {
 interface RemyndDetailsDependency {
     fun remyndDao(): RemyndDao
     fun resourceProvider(): ResourcesProvider
+    fun alarmScheduler(): AlarmScheduler
 }

@@ -1,9 +1,12 @@
 package com.rain.remynd.data
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "remynd_table")
 data class RemyndEntity(
     @PrimaryKey(autoGenerate = true)
@@ -27,4 +30,4 @@ data class RemyndEntity(
 
     @ColumnInfo(name = "interval")
     val interval: Long? = null
-)
+) : Parcelable

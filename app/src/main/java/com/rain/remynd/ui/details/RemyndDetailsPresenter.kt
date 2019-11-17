@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.view.DateItem
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,7 @@ import java.util.Calendar
 class RemyndDetailsPresenter(
     private val view: RemyndDetailsView,
     private val remyndDao: RemyndDao,
+    private val alarmScheduler: AlarmScheduler,
     private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
     private val reducer = RemyndReducer()
@@ -196,9 +198,10 @@ class RemyndDetailsPresenter(
                 return@launch
             }
 
-            if (entity.id != 0L) remyndDao.update(entity)
+            if (entity.id != 0L) {remyndDao.update(entity)}
             else remyndDao.insert(entity)
             scope.launch(Dispatchers.Main) {
+                alarmScheduler.schedule(entity)
                 view.goBack()
             }
         }
