@@ -30,9 +30,20 @@ class AlarmIntentService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         runBlocking {
-            val entity: RemyndEntity = intent.getParcelableExtra(ENTITY)
+            val id = intent.getLongExtra(ID, -1L)
+            if (id == -1L) {
+                Log.d(tag, "ID is missing")
+                return@runBlocking
+            }
+
+            val entity: RemyndEntity? = remyndDao.get(id)
+            if (entity == null) {
+                Log.d(tag, "Not found item: $id")
+                return@runBlocking
+            }
+
             Log.d(tag, "onHandleWork: $entity")
-            if (entity.daysOfWeek == null) {
+            if (entity.daysOfWeek.isNullOrEmpty()) {
                 remyndDao.update(entity.copy(active = false))
             } else {
                 val time = Calendar.getInstance().apply { timeInMillis = entity.triggerAt }

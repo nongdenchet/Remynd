@@ -11,18 +11,24 @@ interface AlarmScheduler {
     fun schedule(entity: RemyndEntity)
 }
 
-internal const val ENTITY = "ENTITY"
+internal const val MESSAGE = "MESSAGE"
+internal const val ID = "ID"
 
-class AlarmSchedulerImpl(private val context: Context) :
-    AlarmScheduler {
+class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
     private val alarmManager by lazy {
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
     private fun toPendingIntent(entity: RemyndEntity): PendingIntent {
         return Intent(context, AlarmReceiver::class.java).let { intent ->
-            intent.putExtra(ENTITY, entity)
-            PendingIntent.getBroadcast(context, entity.id.toInt(), intent, 0)
+            intent.putExtra(MESSAGE, entity.content)
+            intent.putExtra(ID, entity.id)
+            PendingIntent.getBroadcast(
+                context,
+                entity.id.toInt(),
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
         }
     }
 
