@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.rain.remynd.R
+import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
 
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -24,6 +26,7 @@ class RemyndListPresenter(
     private val view: RemyndListView,
     private val remyndDao: RemyndDao,
     private val navigator: RemyndNavigator,
+    private val alarmScheduler: AlarmScheduler,
     private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
     private val tag = RemyndListPresenter::class.java.simpleName
@@ -56,7 +59,7 @@ class RemyndListPresenter(
                     Log.d(tag, Thread.currentThread().name + ": observe switch events")
                     when (it) {
                         is ItemEvent.ClickEvent -> openItem(it.id)
-                        is ItemEvent.SwitchEvent -> updateItem(it.id, it.active)
+                        is ItemEvent.SwitchEvent -> updateItem(it.id, it.active, it.position)
                     }
                 }
         }
@@ -67,10 +70,26 @@ class RemyndListPresenter(
         navigator.showRemyndDetails(id)
     }
 
-    private fun updateItem(id: Long, active: Boolean) {
+    private fun updateItem(id: Long, active: Boolean, position: Int) {
         scope.launch(Dispatchers.IO) {
             Log.d(tag, Thread.currentThread().name + ": switching $id, $active")
-            remyndDao.update(id, active)
+            var entity = remyndDao.get(id) ?: return@launch
+            if (entity.active == active) {
+                return@launch
+            }
+
+            if (!active) {
+                alarmScheduler.cancel(entity)
+            } else if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
+                scope.launch(Dispatchers.Main) {
+                    view.showError(resourcesProvider.getString(R.string.time_past_error), position)
+                }
+                return@launch
+            }
+
+            entity = entity.copy(active = active)
+            alarmScheduler.schedule(entity)
+            remyndDao.update(entity)
         }
     }
 

@@ -15,6 +15,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.rain.remynd.R
+import com.rain.remynd.alarm.AlarmScheduler
+import com.rain.remynd.alarm.MockAlarmScheduler
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
@@ -33,7 +35,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
-import java.util.Date
+import java.util.Calendar
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -44,6 +46,7 @@ class RemyndListFragmentTest {
     private lateinit var remyndDao: RemyndDao
 
     private val navigator = MockRemyndNavigator()
+    private val scheduler = MockAlarmScheduler()
 
     @Before
     fun setUp() {
@@ -55,6 +58,7 @@ class RemyndListFragmentTest {
         factory = MockFragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
             override fun remyndNavigator(): RemyndNavigator = navigator
+            override fun alarmScheduler(): AlarmScheduler = scheduler
             override fun resourceProvider(): ResourcesProvider =
                 ResourcesProviderImpl(context.resources)
         })
@@ -65,7 +69,9 @@ class RemyndListFragmentTest {
             remyndDao.insert(
                 RemyndEntity(
                     content = "Drink Water",
-                    triggerAt = Date().time,
+                    triggerAt = Calendar.getInstance().apply {
+                        add(Calendar.DATE, 1)
+                    }.timeInMillis,
                     active = false,
                     vibrate = false
                 )
@@ -73,7 +79,9 @@ class RemyndListFragmentTest {
             remyndDao.insert(
                 RemyndEntity(
                     content = "Test Code",
-                    triggerAt = Date().time,
+                    triggerAt = Calendar.getInstance().apply {
+                        add(Calendar.DATE, 1)
+                    }.timeInMillis,
                     active = true,
                     vibrate = false
                 )
@@ -157,7 +165,7 @@ class RemyndListFragmentTest {
     }
 
     @Test
-    fun testSwitchOffItem() {
+    fun testSwitchItem() {
         mockData()
         launchFragmentInContainer<RemyndListFragment>(
             factory = factory,

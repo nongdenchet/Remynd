@@ -129,39 +129,6 @@ class RemyndDaoTest {
     }
 
     @Test
-    fun updateActive() {
-        runBlocking {
-            // Insert
-            assertEquals(1, dao.insert(data))
-
-            // Update
-            assertEquals(1, dao.update(1, false))
-            dao.observe()
-                .take(1)
-                .collect {
-                    assertEquals(
-                        RemyndEntity(
-                            id = 1,
-                            content = "Drink Water",
-                            triggerAt = 1000000,
-                            interval = 60 * 1000,
-                            active = false,
-                            vibrate = false
-                        ),
-                        it[0]
-                    )
-                }
-        }
-    }
-
-    @Test
-    fun updateActiveNonExistRecord() {
-        runBlocking {
-            assertEquals(0, dao.update(1, true))
-        }
-    }
-
-    @Test
     fun updateNonExistRecord() {
         runBlocking {
             assertEquals(0, dao.update(data))

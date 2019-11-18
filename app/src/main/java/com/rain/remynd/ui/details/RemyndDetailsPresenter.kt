@@ -198,7 +198,7 @@ class RemyndDetailsPresenter(
                 return@launch
             }
 
-            if (entity.id != 0L) {remyndDao.update(entity)}
+            if (entity.id != 0L) remyndDao.update(entity)
             else remyndDao.insert(entity)
             scope.launch(Dispatchers.Main) {
                 alarmScheduler.schedule(entity)

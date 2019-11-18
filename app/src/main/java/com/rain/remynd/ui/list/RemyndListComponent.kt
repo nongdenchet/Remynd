@@ -1,6 +1,7 @@
 package com.rain.remynd.ui.list
 
 import androidx.lifecycle.LifecycleObserver
+import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.ui.RemyndNavigator
@@ -30,11 +31,13 @@ object RemyndListModule {
         fragment: RemyndListFragment,
         remyndDao: RemyndDao,
         navigator: RemyndNavigator,
+        alarmScheduler: AlarmScheduler,
         resourcesProvider: ResourcesProvider
     ) = RemyndListPresenter(
         fragment,
         remyndDao,
         navigator,
+        alarmScheduler,
         resourcesProvider
     )
 
@@ -70,4 +73,5 @@ interface RemyndListDependency {
     fun remyndDao(): RemyndDao
     fun remyndNavigator(): RemyndNavigator
     fun resourceProvider(): ResourcesProvider
+    fun alarmScheduler(): AlarmScheduler
 }

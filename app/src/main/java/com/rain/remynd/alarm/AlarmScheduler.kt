@@ -11,6 +11,20 @@ interface AlarmScheduler {
     fun schedule(entity: RemyndEntity)
 }
 
+@Suppress("MemberVisibilityCanBePrivate")
+class MockAlarmScheduler : AlarmScheduler {
+    var cancelEntity: RemyndEntity? = null
+    var scheduleEntity: RemyndEntity? = null
+
+    override fun cancel(entity: RemyndEntity) {
+        cancelEntity = entity
+    }
+
+    override fun schedule(entity: RemyndEntity) {
+        scheduleEntity = entity
+    }
+}
+
 internal const val MESSAGE = "MESSAGE"
 internal const val ID = "ID"
 

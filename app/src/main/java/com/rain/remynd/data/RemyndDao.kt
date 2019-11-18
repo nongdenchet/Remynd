@@ -14,9 +14,6 @@ interface RemyndDao {
     @Query("SELECT COUNT(id) FROM remynd_table")
     suspend fun count(): Int
 
-    @Query("UPDATE remynd_table SET active = :active WHERE id = :id")
-    suspend fun update(id: Long, active: Boolean): Int
-
     @Query("SELECT * FROM remynd_table WHERE id = :id")
     suspend fun get(id: Long): RemyndEntity?
 

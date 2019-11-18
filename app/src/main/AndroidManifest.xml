@@ -15,6 +15,7 @@
 
         <activity
             android:name=".ui.RemyndActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
 

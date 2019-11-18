@@ -7,4 +7,5 @@ interface RemyndListView {
     fun addRemyndClicks(): Flow<Unit>
     fun render(items: List<RemyndItemViewModel>)
     fun renderActiveCount(value: String)
+    fun showError(content: String, position: Int)
 }

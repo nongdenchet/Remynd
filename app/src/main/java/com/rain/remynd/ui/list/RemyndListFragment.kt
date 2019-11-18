@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
@@ -118,4 +119,11 @@ class RemyndListFragment(
     }
 
     override fun itemEvents(): Flow<ItemEvent> = remyndListAdapter.itemEvents()
+
+    override fun showError(content: String, position: Int) {
+        remyndListAdapter.notifyItemChanged(position)
+        context?.run {
+            Toast.makeText(this, content, Toast.LENGTH_LONG).show()
+        }
+    }
 }

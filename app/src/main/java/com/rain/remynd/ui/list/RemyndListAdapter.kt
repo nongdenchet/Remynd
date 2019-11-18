@@ -37,7 +37,7 @@ private val diffCallback = object : DiffUtil.ItemCallback<RemyndItemViewModel>()
 
 sealed class ItemEvent {
     data class ClickEvent(val id: Long) : ItemEvent()
-    data class SwitchEvent(val id: Long, val active: Boolean) : ItemEvent()
+    data class SwitchEvent(val id: Long, val active: Boolean, val position: Int) : ItemEvent()
 }
 
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -77,7 +77,13 @@ class RemyndListAdapter :
             binding.tvDate.text = item.date
             binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
                 scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.SwitchEvent(getItem(adapterPosition).id, isChecked))
+                    eventChannel.send(
+                        ItemEvent.SwitchEvent(
+                            getItem(adapterPosition).id,
+                            isChecked,
+                            adapterPosition
+                        )
+                    )
                 }
             }
             binding.root.setOnClickListener {
