@@ -2,6 +2,7 @@ package com.rain.remynd.ui.list
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -37,6 +38,8 @@ private val diffCallback = object : DiffUtil.ItemCallback<RemyndItemViewModel>()
 
 sealed class ItemEvent {
     data class ClickEvent(val id: Long) : ItemEvent()
+    data class LongClickEvent(val id: Long) : ItemEvent()
+    data class CheckEvent(val id: Long, val value: Boolean) : ItemEvent()
     data class SwitchEvent(val id: Long, val active: Boolean, val position: Int) : ItemEvent()
 }
 
@@ -54,7 +57,36 @@ class RemyndListAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        return ViewHolder(ItemRemyndListBinding.inflate(inflater, parent, false))
+        return ViewHolder(ItemRemyndListBinding.inflate(inflater, parent, false)).apply {
+            binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
+                val pos = adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnCheckedChangeListener
+                scope.launch(Dispatchers.Main) {
+                    eventChannel.send(ItemEvent.SwitchEvent(getItem(pos).id, isChecked, pos))
+                }
+            }
+            binding.cbCheck.setOnCheckedChangeListener { _, isChecked ->
+                val pos = adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnCheckedChangeListener
+                scope.launch(Dispatchers.Main) {
+                    eventChannel.send(ItemEvent.CheckEvent(getItem(pos).id, isChecked))
+                }
+            }
+            binding.root.setOnLongClickListener {
+                val pos = adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnLongClickListener false
+                scope.launch(Dispatchers.Main) {
+                    eventChannel.send(ItemEvent.LongClickEvent(getItem(pos).id))
+                }.let { true }
+            }
+            binding.root.setOnClickListener {
+                val pos = adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+                scope.launch(Dispatchers.Main) {
+                    eventChannel.send(ItemEvent.ClickEvent(getItem(pos).id))
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
@@ -66,7 +98,7 @@ class RemyndListAdapter :
         parentJob.cancel()
     }
 
-    inner class ViewHolder(private val binding: ItemRemyndListBinding) :
+    inner class ViewHolder(val binding: ItemRemyndListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RemyndItemViewModel) {
@@ -75,22 +107,9 @@ class RemyndListAdapter :
             binding.tvContent.text = item.content
             binding.tvClock.text = item.clock
             binding.tvDate.text = item.date
-            binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(
-                        ItemEvent.SwitchEvent(
-                            getItem(adapterPosition).id,
-                            isChecked,
-                            adapterPosition
-                        )
-                    )
-                }
-            }
-            binding.root.setOnClickListener {
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.ClickEvent(getItem(adapterPosition).id))
-                }
-            }
+            binding.cbCheck.isChecked = item.isChecked
+            binding.cbCheck.visibility = if (item.isEditable) View.VISIBLE else View.GONE
+            binding.sEnabled.visibility = if (item.isEditable) View.GONE else View.VISIBLE
         }
     }
 }

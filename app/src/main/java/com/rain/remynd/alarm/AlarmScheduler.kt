@@ -26,6 +26,7 @@ class MockAlarmScheduler : AlarmScheduler {
 }
 
 internal const val MESSAGE = "MESSAGE"
+internal const val VIBRATE = "VIBRATE"
 internal const val ID = "ID"
 
 class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
@@ -37,6 +38,7 @@ class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
         return Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.putExtra(MESSAGE, entity.content)
             intent.putExtra(ID, entity.id)
+            intent.putExtra(VIBRATE, entity.vibrate)
             PendingIntent.getBroadcast(
                 context,
                 entity.id.toInt(),

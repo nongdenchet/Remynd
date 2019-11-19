@@ -144,7 +144,7 @@ class RemyndListFragmentTest {
             themeResId = R.style.AppTheme
         )
 
-        onView(withId(R.id.tvAdd)).perform(click())
+        onView(withId(R.id.ivAdd)).perform(click())
         execute {
             assertEquals(1, navigator.showRemyndFormCount)
         }

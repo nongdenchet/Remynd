@@ -4,8 +4,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemyndListView {
     fun itemEvents(): Flow<ItemEvent>
-    fun addRemyndClicks(): Flow<Unit>
+    fun addClicks(): Flow<Unit>
+    fun introClicks(): Flow<Unit>
+    fun removeClicks(): Flow<Unit>
     fun render(items: List<RemyndItemViewModel>)
+    fun renderEditMode(value: Boolean)
     fun renderActiveCount(value: String)
     fun showError(content: String, position: Int)
+    fun renderIntro(value: Boolean)
 }

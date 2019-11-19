@@ -51,7 +51,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/size_2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvTime"
             app:layout_constraintTop_toBottomOf="@id/tvTime"
             tools:text="Everyday" />
 
@@ -74,10 +74,26 @@
             android:textColor="@color/white"
             android:textSize="@dimen/size_2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/sEnabled"
+            app:layout_constraintEnd_toStartOf="@id/barrier_2"
             app:layout_constraintStart_toEndOf="@id/barrier_1"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Take Medicine" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_2"
+            android:layout_width="wrap_content"
+            app:constraint_referenced_ids="cbCheck,sEnabled"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:id="@+id/cbCheck"
+            android:theme="@style/Checkbox"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
 
         <Switch
             android:id="@+id/sEnabled"

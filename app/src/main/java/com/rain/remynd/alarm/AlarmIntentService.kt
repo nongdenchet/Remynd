@@ -42,7 +42,7 @@ class AlarmIntentService : JobIntentService() {
                 return@runBlocking
             }
 
-            Log.d(tag, "onHandleWork: $entity")
+            Log.d(tag, "${Thread.currentThread().name}: onHandleWork $entity")
             if (entity.daysOfWeek.isNullOrEmpty()) {
                 remyndDao.update(entity.copy(active = false))
             } else {

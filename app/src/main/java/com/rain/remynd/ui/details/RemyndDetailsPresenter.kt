@@ -198,9 +198,17 @@ class RemyndDetailsPresenter(
         scope.launch(Dispatchers.IO) {
             val form = form.asFlow().first()
             val entity = mapper.toEntity(form)
+
             if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
                 scope.launch(Dispatchers.Main) {
                     view.showError(resourcesProvider.getString(R.string.time_past_error))
+                }
+                return@launch
+            }
+
+            if (entity.content.isBlank()) {
+                scope.launch(Dispatchers.Main) {
+                    view.showError(resourcesProvider.getString(R.string.content_empty))
                 }
                 return@launch
             }

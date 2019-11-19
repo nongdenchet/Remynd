@@ -6,10 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.Switch
-import android.widget.TextView
-import com.rain.remynd.view.DateItem
-import com.rain.remynd.view.WeekDatePicker
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,29 +21,7 @@ fun View.clicks(): Flow<Unit> = callbackFlow {
 }
 
 /**
- * Observe stream dates from [WeekDatePicker]
- */
-fun WeekDatePicker.observe(): Flow<List<DateItem>> = callbackFlow {
-    offer(getData())
-    this@observe.setOnDataChangeListener {
-        this.offer(it)
-    }
-    awaitClose { this@observe.setOnDataChangeListener(null) }
-}
-
-/**
- * Observe checked changes
- */
-fun Switch.observe(): Flow<Boolean> = callbackFlow {
-    offer(isChecked)
-    this@observe.setOnCheckedChangeListener { _, isChecked ->
-        this.offer(isChecked)
-    }
-    awaitClose { this@observe.setOnCheckedChangeListener(null) }
-}
-
-/**
- * Observe checked changes
+ * Observe checked changes from [EditText]
  */
 fun EditText.text(): Flow<String> = callbackFlow {
     offer(this@text.text.toString())

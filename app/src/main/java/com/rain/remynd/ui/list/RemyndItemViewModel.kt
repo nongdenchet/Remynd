@@ -6,5 +6,7 @@ data class RemyndItemViewModel(
     val date: String,
     val clock: String,
     val content: String,
-    val active: Boolean
+    val active: Boolean,
+    val isEditable: Boolean,
+    val isChecked: Boolean
 )

@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
@@ -41,19 +43,23 @@ class AlarmReceiver : BroadcastReceiver() {
             Intent(context, RemyndActivity::class.java),
             PendingIntent.FLAG_CANCEL_CURRENT
         )
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(context.getString(R.string.app_name))
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle(context.getString(R.string.reminder))
             .setContentText(message)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.ic_calendar)
             .setContentIntent(pendingIntent)
-            .build()
+            .setLights(Color.RED, 3000, 3000)
+            .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+        if (intent.getBooleanExtra(VIBRATE, false)) {
+            builder.setVibrate(LongArray(3) { 1000 })
+        }
 
         createNotificationChannel(context)
         with(NotificationManagerCompat.from(context)) {
             Log.d(tag, "Sending notification: $id, $message")
-            notify(id.toInt(), notification)
+            notify(id.toInt(), builder.build())
         }
 
         // Update database job

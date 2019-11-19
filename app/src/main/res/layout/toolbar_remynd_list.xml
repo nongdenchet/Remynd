@@ -23,13 +23,24 @@
             android:textSize="@dimen/size_3" />
 
         <ImageView
-            android:id="@+id/tvAdd"
+            android:id="@+id/ivAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
             android:padding="@dimen/space_3"
             android:src="@drawable/ic_add"
             android:theme="@android:style/ThemeOverlay.Material.Dark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:padding="@dimen/space_3"
+            android:src="@drawable/ic_remove"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
+            android:visibility="gone"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 </layout>

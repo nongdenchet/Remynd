@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.rain.remynd.R
 import com.rain.remynd.databinding.FragmentRemyndListBinding
+import com.rain.remynd.support.BackHandler
 import com.rain.remynd.support.clicks
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -25,7 +26,7 @@ import kotlin.math.abs
 
 class RemyndListFragment(
     private val dependency: RemyndListDependency
-) : Fragment(), RemyndListView {
+) : Fragment(), RemyndListView, BackHandler {
     private lateinit var binding: FragmentRemyndListBinding
 
     @Inject
@@ -110,7 +111,11 @@ class RemyndListFragment(
         presenter.bind()
     }
 
-    override fun addRemyndClicks(): Flow<Unit> = binding.toolbarContent.tvAdd.clicks()
+    override fun addClicks(): Flow<Unit> = binding.toolbarContent.ivAdd.clicks()
+
+    override fun introClicks(): Flow<Unit> = binding.tvIntro.clicks()
+
+    override fun removeClicks(): Flow<Unit> = binding.toolbarContent.ivRemove.clicks()
 
     override fun render(items: List<RemyndItemViewModel>) = remyndListAdapter.submitList(items)
 
@@ -122,8 +127,18 @@ class RemyndListFragment(
 
     override fun showError(content: String, position: Int) {
         remyndListAdapter.notifyItemChanged(position)
-        context?.run {
-            Toast.makeText(this, content, Toast.LENGTH_LONG).show()
-        }
+        context?.run { Toast.makeText(this, content, Toast.LENGTH_LONG).show() }
+    }
+
+    override fun onBackPressed(): Boolean = presenter.onBackPressed()
+
+    override fun renderEditMode(value: Boolean) {
+        binding.toolbarContent.ivAdd.visibility = if (value) View.GONE else View.VISIBLE
+        binding.toolbarContent.ivRemove.visibility = if (value) View.VISIBLE else View.GONE
+    }
+
+    override fun renderIntro(value: Boolean) {
+        binding.clLayout.visibility = if (value) View.GONE else View.VISIBLE
+        binding.tvIntro.visibility = if (value) View.VISIBLE else View.GONE
     }
 }

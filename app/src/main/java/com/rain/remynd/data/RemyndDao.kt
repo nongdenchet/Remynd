@@ -25,4 +25,7 @@ interface RemyndDao {
 
     @Query("DELETE FROM remynd_table WHERE id = :id")
     suspend fun delete(id: Long): Int
+
+    @Query("DELETE FROM remynd_table WHERE id in (:ids)")
+    suspend fun delete(ids: List<Long>): Int
 }
