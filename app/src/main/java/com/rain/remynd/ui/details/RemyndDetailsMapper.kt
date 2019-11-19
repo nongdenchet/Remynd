@@ -4,6 +4,7 @@ import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.formatTime
 import com.rain.remynd.view.DateItem
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 private val indexToDate = mapOf(
     Calendar.SUNDAY to "Sun",
@@ -21,9 +22,30 @@ class RemyndDetailsViewModelMapper {
             dateInfo = mapDateInfo(form.dateConfig),
             timeInfo = mapTimeInfo(form.dateConfig),
             dateItems = mapDateItems(form.dateConfig),
+            intervalInfo = mapIntervalInfo(form.interval),
             content = form.content,
             vibrate = form.vibrate,
             enabled = form.enabled
+        )
+    }
+
+    private fun mapIntervalInfo(interval: Long?): IntervalInfo {
+        val display = when {
+            interval == null || interval <= 0 -> "None"
+            interval < TimeUnit.HOURS.toMillis(1) ->
+                String.format("%dm", TimeUnit.MILLISECONDS.toMinutes(interval))
+            else -> {
+                val hour = TimeUnit.MILLISECONDS.toHours(interval)
+                val minuteMilliseconds = interval - TimeUnit.HOURS.toMillis(hour)
+                val minute = TimeUnit.MILLISECONDS.toMinutes(minuteMilliseconds)
+
+                String.format("%dh : %dm", hour, minute)
+            }
+        }
+
+        return IntervalInfo(
+            interval = interval ?: 0,
+            display = display
         )
     }
 

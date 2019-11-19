@@ -116,6 +116,13 @@ class RemyndDetailsPresenter(
         }
     }
 
+    fun setInterval(duration: Long?) {
+        Log.d(tag, "Interval picked: $duration")
+        scope.launch(Dispatchers.Main) {
+            actions.send(RemyndFormAction.UpdateInterval(duration))
+        }
+    }
+
     fun currentForm(): RemyndForm {
         return runBlocking { form.asFlow().first() }
     }

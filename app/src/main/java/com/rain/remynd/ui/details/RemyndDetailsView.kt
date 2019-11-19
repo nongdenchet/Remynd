@@ -9,7 +9,13 @@ data class RemyndDetailsViewModel(
     val content: String,
     val vibrate: Boolean,
     val enabled: Boolean,
-    val dateItems: List<DateItem>
+    val dateItems: List<DateItem>,
+    val intervalInfo: IntervalInfo
+)
+
+data class IntervalInfo(
+    val interval: Long,
+    val display: String
 )
 
 data class DateInfo(

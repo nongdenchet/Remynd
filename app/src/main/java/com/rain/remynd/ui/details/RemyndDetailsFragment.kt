@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
 import com.rain.remynd.support.text
+import com.rain.remynd.view.PickerDialogFragment
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.coroutines.flow.Flow
@@ -62,43 +63,71 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
     }
 
     private fun updateTimePicker(timeInfo: TimeInfo) {
+        val tag = TimePickerDialog::class.java.simpleName
+        val listener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute, _ ->
+            presenter.setTime(hourOfDay, minute)
+        }
+
+        fragmentManager?.run {
+            val tpd = findFragmentByTag(tag) as TimePickerDialog?
+            tpd?.run { onTimeSetListener = listener }
+        }
         binding.tvClock.text = timeInfo.clock
         binding.tvSelectedTime.text = timeInfo.displayTime
         binding.tvSelectedTime.setOnClickListener {
-            val dpd = TimePickerDialog.newInstance(
-                { _, hourOfDay, minute, _ ->
-                    presenter.setTime(hourOfDay, minute)
-                },
+            val tpd = TimePickerDialog.newInstance(
+                listener,
                 timeInfo.hour,
                 timeInfo.minute,
                 false
             )
-            fragmentManager?.run {
-                dpd.show(this, TimePickerDialog::class.java.simpleName)
-            }
+            fragmentManager?.run { tpd.show(this, tag) }
         }
     }
 
     private fun updateDatePicker(dateInfo: DateInfo) {
+        val tag = DatePickerDialog::class.java.simpleName
+        val listener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            presenter.setDate(year, monthOfYear, dayOfMonth)
+        }
+
         binding.tvDateInfo.text = dateInfo.displayDate
+        fragmentManager?.run {
+            val dpd = findFragmentByTag(tag) as DatePickerDialog?
+            dpd?.run { onDateSetListener = listener }
+        }
         binding.ivCalendar.setOnClickListener {
             val dpd = DatePickerDialog.newInstance(
-                { _, year, monthOfYear, dayOfMonth ->
-                    presenter.setDate(year, monthOfYear, dayOfMonth)
-                },
+                listener,
                 dateInfo.year,
                 dateInfo.month,
                 dateInfo.day
             )
-            fragmentManager?.run {
-                dpd.show(this, DatePickerDialog::class.java.simpleName)
-            }
+            fragmentManager?.run { dpd.show(this, tag) }
+        }
+    }
+
+    private fun updateInterval(intervalInfo: IntervalInfo) {
+        val tag = PickerDialogFragment::class.java.simpleName
+        val listener = object : PickerDialogFragment.Listener {
+            override fun onResult(duration: Long) = presenter.setInterval(duration)
+        }
+
+        binding.tvRemindValue.text = intervalInfo.display
+        fragmentManager?.run {
+            val pdf = findFragmentByTag(tag) as PickerDialogFragment?
+            pdf?.run { setListener(listener) }
+        }
+        binding.tvRemindValue.setOnClickListener {
+            val pdf = PickerDialogFragment.newInstance(intervalInfo.interval, listener)
+            fragmentManager?.run { pdf.show(this, tag) }
         }
     }
 
     override fun render(vm: RemyndDetailsViewModel) {
         updateDatePicker(vm.dateInfo)
         updateTimePicker(vm.timeInfo)
+        updateInterval(vm.intervalInfo)
         binding.sVibrate.isChecked = vm.vibrate
         binding.sEnabled.isChecked = vm.enabled
         binding.edtTitle.setText(vm.content)
