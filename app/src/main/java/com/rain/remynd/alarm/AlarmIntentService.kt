@@ -6,6 +6,7 @@ import androidx.core.app.JobIntentService
 import com.rain.remynd.RemyndApp
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
+import com.rain.remynd.support.toAlarm
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 import javax.inject.Inject
@@ -13,9 +14,10 @@ import javax.inject.Inject
 internal const val ALARM_JOB_ID = 1000
 
 class AlarmIntentService : JobIntentService() {
-
     @Inject
     internal lateinit var remyndDao: RemyndDao
+    @Inject
+    internal lateinit var alarmScheduler: AlarmScheduler
 
     companion object {
         val tag: String = AlarmIntentService::class.java.simpleName
@@ -61,6 +63,7 @@ class AlarmIntentService : JobIntentService() {
                     calendar.add(Calendar.DATE, 1)
                 }
                 calendar.timeInMillis
+                alarmScheduler.schedule(entity.toAlarm())
                 remyndDao.update(entity.copy(triggerAt = calendar.timeInMillis))
             }
         }
