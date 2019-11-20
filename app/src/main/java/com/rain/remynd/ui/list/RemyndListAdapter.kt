@@ -54,36 +54,48 @@ class RemyndListAdapter :
 
     fun itemEvents(): Flow<ItemEvent> = eventChannel.asFlow()
 
+    private fun safeGetItem(position: Int): RemyndItemViewModel? {
+        if (position < 0 || position >= itemCount) {
+            return null
+        }
+
+        return getItem(position)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return ViewHolder(ItemRemyndListBinding.inflate(inflater, parent, false)).apply {
             binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
                 val pos = adapterPosition
-                if (pos == RecyclerView.NO_POSITION) return@setOnCheckedChangeListener
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.SwitchEvent(getItem(pos).id, isChecked, pos))
+                safeGetItem(pos)?.run {
+                    scope.launch(Dispatchers.Main) {
+                        eventChannel.send(ItemEvent.SwitchEvent(id, isChecked, pos))
+                    }
                 }
             }
             binding.cbCheck.setOnCheckedChangeListener { _, isChecked ->
                 val pos = adapterPosition
-                if (pos == RecyclerView.NO_POSITION) return@setOnCheckedChangeListener
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.CheckEvent(getItem(pos).id, isChecked))
+                safeGetItem(pos)?.run {
+                    scope.launch(Dispatchers.Main) {
+                        eventChannel.send(ItemEvent.CheckEvent(id, isChecked))
+                    }
                 }
             }
             binding.root.setOnLongClickListener {
                 val pos = adapterPosition
-                if (pos == RecyclerView.NO_POSITION) return@setOnLongClickListener false
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.LongClickEvent(getItem(pos).id))
+                safeGetItem(pos)?.run {
+                    scope.launch(Dispatchers.Main) {
+                        eventChannel.send(ItemEvent.LongClickEvent(id))
+                    }
                 }.let { true }
             }
             binding.root.setOnClickListener {
                 val pos = adapterPosition
-                if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
-                scope.launch(Dispatchers.Main) {
-                    eventChannel.send(ItemEvent.ClickEvent(getItem(pos).id))
+                safeGetItem(pos)?.run {
+                    scope.launch(Dispatchers.Main) {
+                        eventChannel.send(ItemEvent.ClickEvent(id))
+                    }
                 }
             }
         }

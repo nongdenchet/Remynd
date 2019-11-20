@@ -21,6 +21,7 @@ import java.util.Calendar
 
 internal const val CHANNEL_ID = "CHANNEL_ID"
 internal const val TYPE = "TYPE"
+internal const val DISMISS = "DISMISS"
 
 enum class ReceiverType {
     ALARM, REPEAT, DISMISS, UNKNOWN;
@@ -124,12 +125,12 @@ class AlarmReceiver : BroadcastReceiver() {
         }
         if (interval > 0) {
             builder.addAction(
-                0, context.getString(R.string.resend, formatDuration(interval)),
-                repeatPendingIntent(context, id, message, vibrate, interval)
-            )
-            builder.addAction(
                 0, context.getString(R.string.dismiss),
                 dismissPendingIntent(context, id)
+            )
+            builder.addAction(
+                0, context.getString(R.string.resend, formatDuration(interval)),
+                repeatPendingIntent(context, id, message, vibrate, interval)
             )
         }
 
@@ -155,6 +156,7 @@ class AlarmReceiver : BroadcastReceiver() {
         return Intent(context, AlarmReceiver::class.java).let { intent ->
             intent.putExtra(ID, id)
             intent.putExtra(TYPE, ReceiverType.DISMISS.name)
+            intent.action = DISMISS
             PendingIntent.getBroadcast(
                 context,
                 id.toInt(),
