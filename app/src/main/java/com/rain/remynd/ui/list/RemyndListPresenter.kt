@@ -12,6 +12,7 @@ import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.VibrateUtils
 import com.rain.remynd.support.formatTime
 import com.rain.remynd.support.indexToDate
+import com.rain.remynd.support.toAlarm
 import com.rain.remynd.ui.RemyndNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -147,7 +148,7 @@ class RemyndListPresenter(
             }
 
             if (!active) {
-                alarmScheduler.cancel(entity)
+                alarmScheduler.cancel(entity.toAlarm())
                 remyndDao.update(entity.copy(active = active))
                 return@launch
             }
@@ -167,7 +168,7 @@ class RemyndListPresenter(
                 calendar.timeInMillis
             }
 
-            if (today < calendar) {
+            if (today >= calendar) {
                 scope.launch(Dispatchers.Main) {
                     view.showError(resourcesProvider.getString(R.string.time_past_error), position)
                 }
@@ -175,7 +176,7 @@ class RemyndListPresenter(
             }
 
             entity = entity.copy(active = active, triggerAt = calendar.timeInMillis)
-            alarmScheduler.schedule(entity)
+            alarmScheduler.schedule(entity.toAlarm())
             remyndDao.update(entity)
         }
     }

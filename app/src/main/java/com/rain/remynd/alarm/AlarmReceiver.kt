@@ -14,9 +14,23 @@ import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rain.remynd.R
+import com.rain.remynd.RemyndApp
+import com.rain.remynd.support.formatDuration
 import com.rain.remynd.ui.RemyndActivity
+import java.util.Calendar
 
 internal const val CHANNEL_ID = "CHANNEL_ID"
+internal const val TYPE = "TYPE"
+
+enum class ReceiverType {
+    ALARM, REPEAT, UNKNOWN;
+
+    companion object {
+        fun getByVal(value: String): ReceiverType {
+            return values().firstOrNull { it.name == value } ?: UNKNOWN
+        }
+    }
+}
 
 class AlarmReceiver : BroadcastReceiver() {
     companion object {
@@ -24,6 +38,42 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        val rawType = intent.getStringExtra(TYPE)
+        when (ReceiverType.getByVal(rawType)) {
+            ReceiverType.ALARM -> launchAlarm(context, intent)
+            ReceiverType.REPEAT -> scheduleAlarm(context, intent)
+            ReceiverType.UNKNOWN -> Log.d(tag, "Unknown type: $")
+        }
+    }
+
+    private fun scheduleAlarm(context: Context, intent: Intent) {
+        val message: String? = intent.getStringExtra(MESSAGE)
+        if (message == null) {
+            Log.d(tag, "Message is null for scheduleAlarm")
+            return
+        }
+
+        val id = intent.getLongExtra(ID, -1L)
+        if (id == -1L) {
+            Log.d(tag, "ID is missing for scheduleAlarm")
+            return
+        }
+
+        val interval = intent.getLongExtra(INTERVAL, 0)
+        if (interval <= 0) {
+            Log.d(tag, "interval invalid for scheduleAlarm")
+            return
+        }
+
+        val vibrate = intent.getBooleanExtra(VIBRATE, false)
+        val scheduler = getAlarmScheduler(context)
+        val time = Calendar.getInstance().apply {
+            add(Calendar.MILLISECOND, interval.toInt())
+        }
+        scheduler.schedule(AlarmInput(id, message, time.timeInMillis, vibrate, interval))
+    }
+
+    private fun launchAlarm(context: Context, intent: Intent) {
         val message: String? = intent.getStringExtra(MESSAGE)
         if (message == null) {
             Log.d(tag, "Message is null")
@@ -35,6 +85,9 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d(tag, "ID is missing")
             return
         }
+
+        val interval = intent.getLongExtra(INTERVAL, 0)
+        val vibrate = intent.getBooleanExtra(VIBRATE, false)
 
         // Fire notification
         val pendingIntent = PendingIntent.getActivity(
@@ -52,8 +105,14 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setLights(Color.RED, 3000, 3000)
             .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-        if (intent.getBooleanExtra(VIBRATE, false)) {
+        if (vibrate) {
             builder.setVibrate(LongArray(3) { 1000 })
+        }
+        if (interval > 0) {
+            builder.addAction(
+                0, context.getString(R.string.resend, formatDuration(interval)),
+                repeatPendingIntent(context, id, message, vibrate, interval)
+            )
         }
 
         createNotificationChannel(context)
@@ -72,6 +131,33 @@ class AlarmReceiver : BroadcastReceiver() {
             ALARM_JOB_ID,
             jobIntent
         )
+    }
+
+    private fun repeatPendingIntent(
+        context: Context,
+        id: Long,
+        message: String,
+        vibrate: Boolean,
+        interval: Long
+    ): PendingIntent {
+        return Intent(context, AlarmReceiver::class.java).let { intent ->
+            intent.putExtra(MESSAGE, message)
+            intent.putExtra(ID, id)
+            intent.putExtra(VIBRATE, vibrate)
+            intent.putExtra(INTERVAL, interval)
+            intent.putExtra(TYPE, ReceiverType.REPEAT.name)
+            PendingIntent.getBroadcast(
+                context,
+                id.toInt(),
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
+    }
+
+    private fun getAlarmScheduler(context: Context): AlarmScheduler {
+        return (context.applicationContext as RemyndApp).component
+            .alarmScheduler()
     }
 
     private fun createNotificationChannel(context: Context) {

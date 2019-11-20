@@ -1,11 +1,11 @@
 package com.rain.remynd.ui.details
 
 import com.rain.remynd.data.RemyndEntity
+import com.rain.remynd.support.formatDuration
 import com.rain.remynd.support.formatTime
 import com.rain.remynd.support.indexToDate
 import com.rain.remynd.view.DateItem
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 class RemyndDetailsViewModelMapper {
     fun toViewModel(form: RemyndForm): RemyndDetailsViewModel {
@@ -21,22 +21,9 @@ class RemyndDetailsViewModelMapper {
     }
 
     private fun mapIntervalInfo(interval: Long?): IntervalInfo {
-        val display = when {
-            interval == null || interval <= 0 -> "None"
-            interval < TimeUnit.HOURS.toMillis(1) ->
-                String.format("%dm", TimeUnit.MILLISECONDS.toMinutes(interval))
-            else -> {
-                val hour = TimeUnit.MILLISECONDS.toHours(interval)
-                val minuteMilliseconds = interval - TimeUnit.HOURS.toMillis(hour)
-                val minute = TimeUnit.MILLISECONDS.toMinutes(minuteMilliseconds)
-
-                String.format("%dh : %dm", hour, minute)
-            }
-        }
-
         return IntervalInfo(
             interval = interval ?: 0,
-            display = display
+            display = formatDuration(interval)
         )
     }
 

@@ -8,6 +8,7 @@
     <string name="repeat">Repeat</string>
     <string name="vibrate">Vibrate</string>
     <string name="remind_again">Remind again</string>
+    <string name="resend">Resend after %1s</string>
     <string name="time_past_error">"Selected time is in the past"</string>
     <string name="none">None</string>
     <string name="channel_name">channel_name</string>

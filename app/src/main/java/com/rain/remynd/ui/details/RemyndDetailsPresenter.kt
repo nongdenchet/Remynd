@@ -6,6 +6,7 @@ import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.support.toAlarm
 import com.rain.remynd.view.DateItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -213,12 +214,16 @@ class RemyndDetailsPresenter(
                 return@launch
             }
 
+            // Update DB
             if (entity.id != 0L) remyndDao.update(entity)
             else remyndDao.insert(entity)
-            scope.launch(Dispatchers.Main) {
-                alarmScheduler.schedule(entity)
-                view.goBack()
-            }
+
+            // Schedule alarm
+            if (entity.active) alarmScheduler.schedule(entity.toAlarm())
+            else alarmScheduler.cancel(entity.toAlarm())
+
+            // Exit Fragment
+            scope.launch(Dispatchers.Main) { view.goBack() }
         }
     }
 }
