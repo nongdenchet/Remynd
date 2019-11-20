@@ -23,7 +23,7 @@ internal const val CHANNEL_ID = "CHANNEL_ID"
 internal const val TYPE = "TYPE"
 
 enum class ReceiverType {
-    ALARM, REPEAT, UNKNOWN;
+    ALARM, REPEAT, DISMISS, UNKNOWN;
 
     companion object {
         fun getByVal(value: String): ReceiverType {
@@ -42,8 +42,20 @@ class AlarmReceiver : BroadcastReceiver() {
         when (ReceiverType.getByVal(rawType)) {
             ReceiverType.ALARM -> launchAlarm(context, intent)
             ReceiverType.REPEAT -> scheduleAlarm(context, intent)
+            ReceiverType.DISMISS -> dismissAlarm(context, intent)
             ReceiverType.UNKNOWN -> Log.d(tag, "Unknown type: $")
         }
+    }
+
+    private fun dismissAlarm(context: Context, intent: Intent) {
+        val id = intent.getLongExtra(ID, -1L)
+        if (id == -1L) {
+            Log.d(tag, "ID is missing for scheduleAlarm")
+            return
+        }
+
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.cancel(id.toInt())
     }
 
     private fun scheduleAlarm(context: Context, intent: Intent) {
@@ -58,6 +70,8 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d(tag, "ID is missing for scheduleAlarm")
             return
         }
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.cancel(id.toInt())
 
         val interval = intent.getLongExtra(INTERVAL, 0)
         if (interval <= 0) {
@@ -113,6 +127,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 0, context.getString(R.string.resend, formatDuration(interval)),
                 repeatPendingIntent(context, id, message, vibrate, interval)
             )
+            builder.addAction(
+                0, context.getString(R.string.dismiss),
+                dismissPendingIntent(context, id)
+            )
         }
 
         createNotificationChannel(context)
@@ -131,6 +149,19 @@ class AlarmReceiver : BroadcastReceiver() {
             ALARM_JOB_ID,
             jobIntent
         )
+    }
+
+    private fun dismissPendingIntent(context: Context, id: Long): PendingIntent {
+        return Intent(context, AlarmReceiver::class.java).let { intent ->
+            intent.putExtra(ID, id)
+            intent.putExtra(TYPE, ReceiverType.DISMISS.name)
+            PendingIntent.getBroadcast(
+                context,
+                id.toInt(),
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
     }
 
     private fun repeatPendingIntent(
