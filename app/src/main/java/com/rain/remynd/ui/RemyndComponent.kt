@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.support.VibrateUtils
 import com.rain.remynd.ui.details.RemyndDetailsDependency
 import com.rain.remynd.ui.list.RemyndListDependency
 import dagger.BindsInstance
@@ -56,4 +57,5 @@ interface RemyndDependency {
     fun remyndDao(): RemyndDao
     fun alarmScheduler(): AlarmScheduler
     fun resourceProvider(): ResourcesProvider
+    fun vibrateUtils(): VibrateUtils
 }

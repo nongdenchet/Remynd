@@ -74,7 +74,7 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         }
         binding.tvClock.text = timeInfo.clock
         binding.tvSelectedTime.text = timeInfo.displayTime
-        binding.tvSelectedTime.setOnClickListener {
+        binding.flTime.setOnClickListener {
             val tpd = TimePickerDialog.newInstance(
                 listener,
                 timeInfo.hour,
@@ -130,9 +130,14 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         updateInterval(vm.intervalInfo)
         binding.sVibrate.isChecked = vm.vibrate
         binding.sEnabled.isChecked = vm.enabled
-        binding.edtTitle.setText(vm.content)
-        binding.edtTitle.setSelection(vm.content.length)
         binding.llDates.updateDates(vm.dateItems)
+        // Two way binding
+        vm.content.let {
+            if (!it.userInput) {
+                binding.edtTitle.setText(it.content)
+                binding.edtTitle.setSelection(it.content.length)
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

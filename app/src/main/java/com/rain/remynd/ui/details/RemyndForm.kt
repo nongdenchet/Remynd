@@ -7,12 +7,18 @@ import java.util.Calendar
 @Parcelize
 data class RemyndForm(
     val id: Long?,
-    val content: String,
+    val contentInfo: ContentInfo,
     val dateConfig: DateConfig,
     val enabled: Boolean,
     val vibrate: Boolean,
     val interval: Long?
 ) : Parcelable
+
+@Parcelize
+data class ContentInfo(
+    val userInput: Boolean,
+    val content: String
+): Parcelable
 
 sealed class DateConfig : Parcelable {
     @Parcelize

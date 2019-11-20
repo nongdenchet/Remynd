@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import com.rain.remynd.R
+import com.rain.remynd.support.indexToDateSymbol
 import java.util.Calendar
 
 data class DateItem(val dateInWeek: Int, val checked: Boolean) : Parcelable {
@@ -58,16 +59,6 @@ private class SavedState : View.BaseSavedState {
     }
 }
 
-private val indexToDate = mapOf(
-    Calendar.SUNDAY to 'S',
-    Calendar.MONDAY to 'M',
-    Calendar.TUESDAY to 'T',
-    Calendar.WEDNESDAY to 'W',
-    Calendar.THURSDAY to 'T',
-    Calendar.FRIDAY to 'F',
-    Calendar.SATURDAY to 'S'
-)
-
 private val defaultItems: List<DateItem> = Array(7) {
     DateItem(Calendar.SUNDAY + it, false)
 }.toList()
@@ -96,7 +87,7 @@ class WeekDatePicker @JvmOverloads constructor(
         this.items = items
         items.forEachIndexed { index, item ->
             getOrCreateViewHolder(index).run {
-                tvTime.text = indexToDate[item.dateInWeek].toString()
+                tvTime.text = indexToDateSymbol[item.dateInWeek].toString()
                 setChecked(tvTime, item.checked)
             }
         }
@@ -115,8 +106,6 @@ class WeekDatePicker @JvmOverloads constructor(
             else R.drawable.round_background_normal
         )
     }
-
-    fun getData(): List<DateItem> = items
 
     fun setOnDataChangeListener(listener: ((items: List<DateItem>) -> Unit)?) {
         this.listener = listener

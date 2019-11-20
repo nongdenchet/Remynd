@@ -15,4 +15,5 @@
     <string name="content_empty">Content is empty</string>
     <string name="intro">Welcome to Remynd\nClick to add first reminder</string>
     <string name="reminder">You have a reminder</string>
+    <string name="everyday">Everyday</string>
 </resources>

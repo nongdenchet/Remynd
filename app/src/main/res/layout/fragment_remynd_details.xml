@@ -11,58 +11,64 @@
         android:focusable="true"
         android:padding="@dimen/space_4">
 
-        <TextView
-            android:id="@+id/tvSelectedTime"
+        <LinearLayout
+            android:id="@+id/flTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/space_10"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:letterSpacing="0.05"
-            android:lines="1"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/size_8"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="07:30" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvClock"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_1"
-            android:layout_marginTop="@dimen/space_1"
-            android:layout_marginBottom="@dimen/space_1"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:lines="1"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/size_2"
-            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
-            app:layout_constraintStart_toEndOf="@+id/tvSelectedTime"
-            tools:text="AM" />
+            <TextView
+                android:id="@+id/tvSelectedTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:letterSpacing="0.05"
+                android:lines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_8"
+                tools:text="07:30" />
+
+            <TextView
+                android:id="@+id/tvClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/space_1"
+                android:layout_marginBottom="@dimen/space_1"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:lines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_2"
+                tools:text="AM" />
+        </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/space_1"
             android:layout_marginEnd="@dimen/space_1"
-            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintBottom_toBottomOf="@id/flTime"
             app:layout_constraintEnd_toStartOf="@id/sEnabled"
-            app:layout_constraintStart_toEndOf="@id/tvClock"
-            app:layout_constraintTop_toTopOf="@id/tvSelectedTime" />
+            app:layout_constraintStart_toEndOf="@id/flTime"
+            app:layout_constraintTop_toTopOf="@id/flTime" />
 
         <Switch
             android:id="@+id/sEnabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            app:layout_constraintBottom_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintBottom_toBottomOf="@id/flTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvSelectedTime"
+            app:layout_constraintTop_toTopOf="@id/flTime"
             tools:checked="true" />
 
         <TextView
@@ -74,7 +80,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/size_2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSelectedTime"
+            app:layout_constraintTop_toBottomOf="@id/flTime"
             tools:text="Mon, Wed" />
 
         <ImageView
@@ -155,10 +161,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
+            android:padding="@dimen/space_4"
             android:text="@string/none"
             android:textColor="@color/white"
             android:textSize="@dimen/size_3"
-            android:padding="@dimen/space_4"
             android:theme="@android:style/ThemeOverlay.Material.Dark"
             app:layout_constraintBottom_toBottomOf="@id/tvRemind"
             app:layout_constraintEnd_toEndOf="parent"

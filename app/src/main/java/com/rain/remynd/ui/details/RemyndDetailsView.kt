@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 data class RemyndDetailsViewModel(
     val timeInfo: TimeInfo,
     val dateInfo: DateInfo,
-    val content: String,
+    val content: ContentInfo,
     val vibrate: Boolean,
     val enabled: Boolean,
     val dateItems: List<DateItem>,

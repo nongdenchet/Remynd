@@ -2,19 +2,10 @@ package com.rain.remynd.ui.details
 
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.formatTime
+import com.rain.remynd.support.indexToDate
 import com.rain.remynd.view.DateItem
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
-
-private val indexToDate = mapOf(
-    Calendar.SUNDAY to "Sun",
-    Calendar.MONDAY to "Mon",
-    Calendar.TUESDAY to "Tue",
-    Calendar.WEDNESDAY to "Wed",
-    Calendar.THURSDAY to "Thu",
-    Calendar.FRIDAY to "Fri",
-    Calendar.SATURDAY to "Sat"
-)
 
 class RemyndDetailsViewModelMapper {
     fun toViewModel(form: RemyndForm): RemyndDetailsViewModel {
@@ -23,7 +14,7 @@ class RemyndDetailsViewModelMapper {
             timeInfo = mapTimeInfo(form.dateConfig),
             dateItems = mapDateItems(form.dateConfig),
             intervalInfo = mapIntervalInfo(form.interval),
-            content = form.content,
+            content = form.contentInfo,
             vibrate = form.vibrate,
             enabled = form.enabled
         )
@@ -73,7 +64,7 @@ class RemyndDetailsViewModelMapper {
 
         return RemyndEntity(
             id = form.id ?: 0,
-            content = form.content,
+            content = form.contentInfo.content,
             active = form.enabled,
             vibrate = form.vibrate,
             interval = form.interval,

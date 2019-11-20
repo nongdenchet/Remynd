@@ -153,10 +153,10 @@ class RemyndReducer {
         action: RemyndFormAction.UpdateContent
     ): RemyndForm {
         val content = action.value
-        return if (prev.content == content) {
+        return if (prev.contentInfo.content == content) {
             prev
         } else {
-            prev.copy(content = content)
+            prev.copy(contentInfo = ContentInfo(true, content))
         }
     }
 }

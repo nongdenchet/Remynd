@@ -9,7 +9,9 @@ import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.support.VibrateUtils
 import com.rain.remynd.support.formatTime
+import com.rain.remynd.support.indexToDate
 import com.rain.remynd.ui.RemyndNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +37,8 @@ class RemyndListPresenter(
     private val remyndDao: RemyndDao,
     private val navigator: RemyndNavigator,
     private val alarmScheduler: AlarmScheduler,
-    private val resourcesProvider: ResourcesProvider
+    private val resourcesProvider: ResourcesProvider,
+    private val vibrateUtils: VibrateUtils
 ) : LifecycleObserver {
     private val tag = RemyndListPresenter::class.java.simpleName
     private val parentJob = Job()
@@ -109,8 +112,12 @@ class RemyndListPresenter(
     private fun handleLongClick(id: Long) {
         scope.launch(Dispatchers.Main) {
             Log.d(tag, Thread.currentThread().name + ": long click $id")
-            val currentMode = editMode.asFlow().first() ?: EditMode(setOf())
-            editMode.send(currentMode.copy(ids = currentMode.ids + id))
+            val currentMode = editMode.asFlow().first()
+            val newMode = currentMode ?: EditMode(setOf())
+            editMode.send(newMode.copy(ids = newMode.ids + id))
+            if (currentMode == null) {
+                vibrateUtils.execute()
+            }
         }
     }
 
@@ -141,14 +148,33 @@ class RemyndListPresenter(
 
             if (!active) {
                 alarmScheduler.cancel(entity)
-            } else if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
+                remyndDao.update(entity.copy(active = active))
+                return@launch
+            }
+
+            val calendar = Calendar.getInstance().apply { timeInMillis = entity.triggerAt }
+            val today = Calendar.getInstance()
+            val daysOfWeek = entity.daysOfWeek
+
+            // Find the next available date to schedule
+            if (!daysOfWeek.isNullOrEmpty()) {
+                val daySet = daysOfWeek.split(";")
+                    .mapNotNull { it.toIntOrNull() }
+                    .toSet()
+                while (today >= calendar || !daySet.contains(calendar.get(Calendar.DAY_OF_WEEK))) {
+                    calendar.add(Calendar.DATE, 1)
+                }
+                calendar.timeInMillis
+            }
+
+            if (today < calendar) {
                 scope.launch(Dispatchers.Main) {
                     view.showError(resourcesProvider.getString(R.string.time_past_error), position)
                 }
                 return@launch
             }
 
-            entity = entity.copy(active = active)
+            entity = entity.copy(active = active, triggerAt = calendar.timeInMillis)
             alarmScheduler.schedule(entity)
             remyndDao.update(entity)
         }
@@ -194,7 +220,7 @@ class RemyndListPresenter(
             RemyndItemViewModel(
                 id = it.id,
                 content = it.content,
-                date = formatTime("EEE, dd MMM", date),
+                date = formatDate(it.daysOfWeek, date),
                 clock = formatTime("a", date),
                 time = formatTime("hh:mm", date),
                 active = it.active,
@@ -203,6 +229,22 @@ class RemyndListPresenter(
             )
         }
         return viewModels to editMode
+    }
+
+    private fun formatDate(daysOfWeek: String?, date: Date): String {
+        return if (daysOfWeek.isNullOrEmpty()) {
+            formatTime("EEE, dd MMM", date)
+        } else {
+            val days = daysOfWeek.split(";")
+                .mapNotNull { it.toIntOrNull() }
+
+            return if (days.size == 7) {
+                resourcesProvider.getString(R.string.everyday)
+            } else {
+                days.map { indexToDate[it] }
+                    .joinToString(", ")
+            }
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

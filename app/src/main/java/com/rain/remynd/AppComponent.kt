@@ -2,11 +2,13 @@ package com.rain.remynd
 
 import android.content.Context
 import com.rain.remynd.alarm.AlarmIntentService
-import com.rain.remynd.data.StorageModule
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.alarm.AlarmSchedulerImpl
+import com.rain.remynd.data.StorageModule
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
+import com.rain.remynd.support.VibrateUtils
+import com.rain.remynd.support.VibrateUtilsImpl
 import com.rain.remynd.ui.RemyndDependency
 import dagger.BindsInstance
 import dagger.Component
@@ -29,8 +31,12 @@ object AppModule {
     @Provides
     @JvmStatic
     @AppScope
-    fun provideAlarmScheduler(context: Context): AlarmScheduler =
-        AlarmSchedulerImpl(context)
+    fun provideAlarmScheduler(context: Context): AlarmScheduler = AlarmSchedulerImpl(context)
+
+    @Provides
+    @JvmStatic
+    @AppScope
+    fun provideVibrateUtils(context: Context): VibrateUtils = VibrateUtilsImpl(context)
 
     @Provides
     @JvmStatic

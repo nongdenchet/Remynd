@@ -22,6 +22,8 @@ import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
+import com.rain.remynd.support.VibrateUtils
+import com.rain.remynd.support.VibrateUtilsImpl
 import com.rain.remynd.ui.MockRemyndNavigator
 import com.rain.remynd.ui.RemyndNavigator
 import com.rain.remynd.ui.execute
@@ -59,6 +61,7 @@ class RemyndListFragmentTest {
             override fun remyndDao(): RemyndDao = remyndDao
             override fun remyndNavigator(): RemyndNavigator = navigator
             override fun alarmScheduler(): AlarmScheduler = scheduler
+            override fun vibrateUtils(): VibrateUtils = VibrateUtilsImpl(context)
             override fun resourceProvider(): ResourcesProvider =
                 ResourcesProviderImpl(context.resources)
         })

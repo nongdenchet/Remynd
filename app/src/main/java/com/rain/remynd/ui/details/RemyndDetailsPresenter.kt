@@ -162,7 +162,7 @@ class RemyndDetailsPresenter(
 
             return RemyndForm(
                 id = entity.id,
-                content = entity.content,
+                contentInfo = ContentInfo(false, entity.content),
                 dateConfig = dateConfig,
                 enabled = entity.active,
                 vibrate = entity.vibrate,
@@ -180,7 +180,7 @@ class RemyndDetailsPresenter(
         }
         return RemyndForm(
             id = null,
-            content = "",
+            contentInfo = ContentInfo(false, ""),
             dateConfig = DateConfig.SingleDate(tomorrow),
             enabled = true,
             vibrate = false,
