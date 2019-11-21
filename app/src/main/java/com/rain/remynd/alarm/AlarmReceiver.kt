@@ -44,7 +44,7 @@ class AlarmReceiver : BroadcastReceiver() {
             ReceiverType.ALARM -> launchAlarm(context, intent)
             ReceiverType.REPEAT -> scheduleAlarm(context, intent)
             ReceiverType.DISMISS -> dismissAlarm(context, intent)
-            ReceiverType.UNKNOWN -> Log.d(tag, "Unknown type: $")
+            ReceiverType.UNKNOWN -> Log.d(tag, "Unknown type: $rawType")
         }
     }
 
@@ -104,7 +104,6 @@ class AlarmReceiver : BroadcastReceiver() {
         val interval = intent.getLongExtra(INTERVAL, 0)
         val vibrate = intent.getBooleanExtra(VIBRATE, false)
 
-        // Fire notification
         val pendingIntent = PendingIntent.getActivity(
             context,
             id.toInt(),
@@ -139,8 +138,10 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d(tag, "Sending notification: $id, $message")
             notify(id.toInt(), builder.build())
         }
+        fireIntentService(context, id)
+    }
 
-        // Update database job
+    private fun fireIntentService(context: Context, id: Long) {
         val jobIntent = Intent(context, AlarmIntentService::class.java)
             .apply { this.putExtra(ID, id) }
 

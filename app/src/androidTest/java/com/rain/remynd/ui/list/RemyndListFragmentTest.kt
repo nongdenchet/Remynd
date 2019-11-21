@@ -16,7 +16,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.rain.remynd.R
 import com.rain.remynd.alarm.AlarmScheduler
-import com.rain.remynd.alarm.MockAlarmScheduler
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
@@ -24,19 +23,20 @@ import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
 import com.rain.remynd.support.VibrateUtils
 import com.rain.remynd.support.VibrateUtilsImpl
-import com.rain.remynd.ui.MockRemyndNavigator
 import com.rain.remynd.ui.RemyndNavigator
 import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.recyclerViewCount
 import com.rain.remynd.ui.withRecyclerView
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import java.util.Calendar
 
 @LargeTest
@@ -47,11 +47,14 @@ class RemyndListFragmentTest {
     private lateinit var db: RemyndDB
     private lateinit var remyndDao: RemyndDao
 
-    private val navigator = MockRemyndNavigator()
-    private val scheduler = MockAlarmScheduler()
+    @Mock
+    private lateinit var navigator: RemyndNavigator
+    @Mock
+    private lateinit var scheduler: AlarmScheduler
 
     @Before
     fun setUp() {
+        MockitoAnnotations.initMocks(this)
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, RemyndDB::class.java)
             .fallbackToDestructiveMigration()
@@ -149,7 +152,7 @@ class RemyndListFragmentTest {
 
         onView(withId(R.id.ivAdd)).perform(click())
         execute {
-            assertEquals(1, navigator.showRemyndFormCount)
+            verify(navigator).showRemyndForm()
         }
     }
 
@@ -163,7 +166,7 @@ class RemyndListFragmentTest {
 
         onView(withRecyclerView(R.id.rvReminds).atPosition(0)).perform(click())
         execute {
-            assertEquals(1, navigator.showRemyndDetailsCount)
+            verify(navigator).showRemyndDetails(1)
         }
     }
 
@@ -201,6 +204,5 @@ class RemyndListFragmentTest {
     @After
     fun tearDown() {
         db.close()
-        navigator.reset()
     }
 }

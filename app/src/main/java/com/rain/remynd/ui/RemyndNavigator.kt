@@ -14,31 +14,6 @@ interface RemyndNavigator {
     fun showRemyndDetails(id: Long)
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
-class MockRemyndNavigator : RemyndNavigator {
-    var showRemyndListCount = 0
-    var showRemyndFormCount = 0
-    var showRemyndDetailsCount = 0
-
-    override fun showRemyndList() {
-        showRemyndListCount++
-    }
-
-    override fun showRemyndForm() {
-        showRemyndFormCount++
-    }
-
-    override fun showRemyndDetails(id: Long) {
-        showRemyndDetailsCount++
-    }
-
-    fun reset() {
-        showRemyndListCount = 0
-        showRemyndFormCount = 0
-        showRemyndDetailsCount = 0
-    }
-}
-
 class RemyndNavigatorImpl(
     private val activity: AppCompatActivity,
     private val fragmentFactory: FragmentFactory

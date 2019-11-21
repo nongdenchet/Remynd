@@ -10,20 +10,6 @@ interface AlarmScheduler {
     fun schedule(input: AlarmInput)
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
-class MockAlarmScheduler : AlarmScheduler {
-    var cancel: AlarmInput? = null
-    var schedule: AlarmInput? = null
-
-    override fun cancel(input: AlarmInput) {
-        cancel = input
-    }
-
-    override fun schedule(input: AlarmInput) {
-        schedule = input
-    }
-}
-
 internal const val MESSAGE = "MESSAGE"
 internal const val VIBRATE = "VIBRATE"
 internal const val INTERVAL = "INTERVAL"
