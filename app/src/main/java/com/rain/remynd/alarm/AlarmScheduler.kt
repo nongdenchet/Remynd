@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 
 interface AlarmScheduler {
+    fun cancel(ids: Set<Long>)
     fun cancel(input: AlarmInput)
     fun schedule(input: AlarmInput)
 }
@@ -29,18 +30,31 @@ class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
     }
 
     private fun toPendingIntent(input: AlarmInput): PendingIntent {
-        return Intent(context, AlarmReceiver::class.java).let { intent ->
+        return prepareIntent(input.id) { intent ->
             intent.putExtra(MESSAGE, input.content)
             intent.putExtra(ID, input.id)
             intent.putExtra(VIBRATE, input.vibrate)
             intent.putExtra(INTERVAL, input.interval ?: 0)
             intent.putExtra(TYPE, ReceiverType.ALARM.name)
-            PendingIntent.getBroadcast(
-                context,
-                input.id.toInt(),
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
+        }
+    }
+
+    private fun prepareIntent(id: Long, factory: (Intent) -> Intent): PendingIntent {
+        return Intent(context, AlarmReceiver::class.java)
+            .let(factory)
+            .let { intent ->
+                PendingIntent.getBroadcast(
+                    context,
+                    id.toInt(),
+                    intent,
+                    PendingIntent.FLAG_CANCEL_CURRENT
+                )
+            }
+    }
+
+    override fun cancel(ids: Set<Long>) {
+        ids.forEach { id ->
+            alarmManager.cancel(prepareIntent(id) { it })
         }
     }
 

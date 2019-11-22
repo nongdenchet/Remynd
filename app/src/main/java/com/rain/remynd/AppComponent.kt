@@ -4,6 +4,7 @@ import android.content.Context
 import com.rain.remynd.alarm.AlarmIntentService
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.alarm.AlarmSchedulerImpl
+import com.rain.remynd.alarm.BootIntentService
 import com.rain.remynd.data.StorageModule
 import com.rain.remynd.support.ResourcesProvider
 import com.rain.remynd.support.ResourcesProviderImpl
@@ -55,5 +56,6 @@ interface AppComponent : RemyndDependency {
         fun create(@BindsInstance app: RemyndApp): AppComponent
     }
 
-    fun inject(alarmIntentService: AlarmIntentService)
+    fun inject(service: AlarmIntentService)
+    fun inject(service: BootIntentService)
 }

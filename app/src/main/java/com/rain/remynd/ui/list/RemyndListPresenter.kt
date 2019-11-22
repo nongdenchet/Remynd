@@ -79,6 +79,7 @@ class RemyndListPresenter(
         scope.launch(Dispatchers.IO) {
             remyndDao.delete(ids.toList())
             editMode.send(null)
+            alarmScheduler.cancel(ids)
         }
     }
 
