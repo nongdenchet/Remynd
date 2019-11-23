@@ -174,15 +174,17 @@ class RemyndDetailsPresenter(
     }
 
     private fun defaultForm(): RemyndForm {
-        val tomorrow = Calendar.getInstance().apply {
-            add(Calendar.DATE, 1)
+        val time = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 19)
             set(Calendar.MINUTE, 30)
+            if (this < Calendar.getInstance()) {
+                add(Calendar.DATE, 1)
+            }
         }
         return RemyndForm(
             id = null,
             contentInfo = ContentInfo(false, ""),
-            dateConfig = DateConfig.SingleDate(tomorrow),
+            dateConfig = DateConfig.SingleDate(time),
             enabled = true,
             vibrate = false,
             interval = null
