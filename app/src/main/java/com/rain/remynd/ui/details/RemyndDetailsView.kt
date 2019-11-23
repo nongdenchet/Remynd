@@ -35,6 +35,6 @@ data class TimeInfo(
 interface RemyndDetailsView {
     fun render(vm: RemyndDetailsViewModel)
     fun contentChanges(): Flow<String>
+    fun showMessage(content: String)
     fun goBack()
-    fun showError(content: String)
 }

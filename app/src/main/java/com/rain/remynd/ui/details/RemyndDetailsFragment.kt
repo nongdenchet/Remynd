@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rain.remynd.databinding.FragmentRemyndDetailsBinding
-import com.rain.remynd.support.text
+import com.rain.remynd.common.text
 import com.rain.remynd.view.PickerDialogFragment
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -155,7 +155,7 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
 
     override fun contentChanges(): Flow<String> = binding.edtTitle.text()
 
-    override fun showError(content: String) {
+    override fun showMessage(content: String) {
         context?.run {
             Toast.makeText(this, content, Toast.LENGTH_LONG).show()
         }

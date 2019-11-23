@@ -16,14 +16,6 @@ internal const val VIBRATE = "VIBRATE"
 internal const val INTERVAL = "INTERVAL"
 internal const val ID = "ID"
 
-data class AlarmInput(
-    val id: Long,
-    val content: String,
-    val triggerAt: Long,
-    val vibrate: Boolean,
-    val interval: Long?
-)
-
 class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
     private val alarmManager by lazy {
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

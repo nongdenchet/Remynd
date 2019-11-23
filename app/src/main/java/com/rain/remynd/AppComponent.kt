@@ -5,21 +5,17 @@ import com.rain.remynd.alarm.AlarmIntentService
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.alarm.AlarmSchedulerImpl
 import com.rain.remynd.alarm.BootIntentService
+import com.rain.remynd.common.AppScope
 import com.rain.remynd.data.StorageModule
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.ResourcesProviderImpl
-import com.rain.remynd.support.VibrateUtils
-import com.rain.remynd.support.VibrateUtilsImpl
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.common.ResourcesProviderImpl
+import com.rain.remynd.common.VibrateUtils
+import com.rain.remynd.common.VibrateUtilsImpl
 import com.rain.remynd.ui.RemyndDependency
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Scope
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class AppScope
 
 @Module
 object AppModule {

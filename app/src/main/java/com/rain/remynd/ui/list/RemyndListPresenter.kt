@@ -8,12 +8,13 @@ import com.rain.remynd.R
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.VibrateUtils
-import com.rain.remynd.support.formatTime
-import com.rain.remynd.support.indexToDate
-import com.rain.remynd.support.toAlarm
-import com.rain.remynd.ui.RemyndNavigator
+import com.rain.remynd.common.RemindFormatUtils
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.common.VibrateUtils
+import com.rain.remynd.common.formatTime
+import com.rain.remynd.common.indexToDate
+import com.rain.remynd.alarm.toAlarm
+import com.rain.remynd.navigator.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,9 +37,10 @@ private data class EditMode(val ids: Set<Long>)
 class RemyndListPresenter(
     private val view: RemyndListView,
     private val remyndDao: RemyndDao,
-    private val navigator: RemyndNavigator,
+    private val navigator: Navigator,
     private val alarmScheduler: AlarmScheduler,
     private val resourcesProvider: ResourcesProvider,
+    private val remindFormatUtils: RemindFormatUtils,
     private val vibrateUtils: VibrateUtils
 ) : LifecycleObserver {
     private val tag = RemyndListPresenter::class.java.simpleName
@@ -57,12 +59,12 @@ class RemyndListPresenter(
         scope.launch(Dispatchers.Main) {
             view.addClicks()
                 .debounce(300)
-                .collect { navigator.showRemyndForm() }
+                .collect { navigator.showRemindForm() }
         }
         scope.launch(Dispatchers.Main) {
             view.introClicks()
                 .debounce(300)
-                .collect { navigator.showRemyndForm() }
+                .collect { navigator.showRemindForm() }
         }
         scope.launch(Dispatchers.Main) {
             view.removeClicks()
@@ -128,7 +130,7 @@ class RemyndListPresenter(
             Log.d(tag, Thread.currentThread().name + ": handleClick $id")
             val currentMode = editMode.asFlow().first()
             if (currentMode == null) {
-                navigator.showRemyndDetails(id)
+                navigator.showRemindDetails(id)
             } else {
                 val ids = if (currentMode.ids.contains(id)) {
                     currentMode.ids - id
@@ -179,6 +181,9 @@ class RemyndListPresenter(
             entity = entity.copy(active = active, triggerAt = calendar.timeInMillis)
             alarmScheduler.schedule(entity.toAlarm())
             remyndDao.update(entity)
+            scope.launch(Dispatchers.Main) {
+                view.showMessage(remindFormatUtils.execute(entity.triggerAt))
+            }
         }
     }
 

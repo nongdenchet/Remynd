@@ -1,4 +1,4 @@
-package com.rain.remynd.support
+package com.rain.remynd.common
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

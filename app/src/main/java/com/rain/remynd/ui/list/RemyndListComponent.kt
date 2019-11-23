@@ -3,9 +3,11 @@ package com.rain.remynd.ui.list
 import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.VibrateUtils
-import com.rain.remynd.ui.RemyndNavigator
+import com.rain.remynd.common.RemindFormatUtils
+import com.rain.remynd.common.RemindFormatUtilsImpl
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.common.VibrateUtils
+import com.rain.remynd.navigator.Navigator
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -31,9 +33,10 @@ object RemyndListModule {
     fun providePresenter(
         fragment: RemyndListFragment,
         remyndDao: RemyndDao,
-        navigator: RemyndNavigator,
+        navigator: Navigator,
         alarmScheduler: AlarmScheduler,
         resourcesProvider: ResourcesProvider,
+        remindFormatUtils: RemindFormatUtils,
         vibrateUtils: VibrateUtils
     ) = RemyndListPresenter(
         fragment,
@@ -41,8 +44,16 @@ object RemyndListModule {
         navigator,
         alarmScheduler,
         resourcesProvider,
+        remindFormatUtils,
         vibrateUtils
     )
+
+    @Provides
+    @JvmStatic
+    @RemyndListScope
+    fun provideRemindFormatUtils(resourcesProvider: ResourcesProvider): RemindFormatUtils {
+        return RemindFormatUtilsImpl(resourcesProvider)
+    }
 
     @Provides
     @JvmStatic
@@ -74,7 +85,7 @@ interface RemyndListComponent {
 
 interface RemyndListDependency {
     fun remyndDao(): RemyndDao
-    fun remyndNavigator(): RemyndNavigator
+    fun remyndNavigator(): Navigator
     fun resourceProvider(): ResourcesProvider
     fun alarmScheduler(): AlarmScheduler
     fun vibrateUtils(): VibrateUtils

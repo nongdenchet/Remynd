@@ -1,10 +1,11 @@
 package com.rain.remynd.ui
 
 import androidx.fragment.app.FragmentFactory
-import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.alarm.AlarmScheduler
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.VibrateUtils
+import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.navigator.Navigator
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.common.VibrateUtils
 import com.rain.remynd.ui.details.RemyndDetailsDependency
 import com.rain.remynd.ui.list.RemyndListDependency
 import dagger.BindsInstance
@@ -32,7 +33,7 @@ object RemyndModule {
     fun provideRemyndNavigator(
         activity: RemyndActivity,
         fragmentFactory: FragmentFactory
-    ): RemyndNavigator = RemyndNavigatorImpl(
+    ): Navigator = NavigatorImpl(
         activity,
         fragmentFactory
     )

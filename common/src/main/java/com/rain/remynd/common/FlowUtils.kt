@@ -1,6 +1,6 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package com.rain.remynd.support
+package com.rain.remynd.common
 
 import android.text.Editable
 import android.text.TextWatcher

@@ -1,19 +1,20 @@
 package com.rain.remynd.data
 
+import android.content.Context
 import androidx.room.Room
-import com.rain.remynd.AppScope
-import com.rain.remynd.RemyndApp
+import com.rain.remynd.common.AppScope
 import dagger.Module
 import dagger.Provides
 
 @Module
 object StorageModule {
+
     @Provides
     @JvmStatic
     @AppScope
-    fun provideRoom(app: RemyndApp): RemyndDB {
+    fun provideRoom(context: Context): RemyndDB {
         return Room.databaseBuilder(
-            app,
+            context,
             RemyndDB::class.java,
             "remynd-database"
         ).build()

@@ -1,7 +1,7 @@
 package com.rain.remynd
 
 import android.app.Application
-import com.rain.remynd.support.DependencyProvider
+import com.rain.remynd.common.DependencyProvider
 import com.rain.remynd.ui.RemyndDependency
 import kotlin.reflect.KClass
 

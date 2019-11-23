@@ -4,21 +4,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.R
+import com.rain.remynd.navigator.Navigator
 import com.rain.remynd.ui.details.REMYND_ID
 import com.rain.remynd.ui.details.RemyndDetailsFragment
 import com.rain.remynd.ui.list.RemyndListFragment
 
-interface RemyndNavigator {
-    fun showRemyndList()
-    fun showRemyndForm()
-    fun showRemyndDetails(id: Long)
-}
-
-class RemyndNavigatorImpl(
+class NavigatorImpl(
     private val activity: AppCompatActivity,
     private val fragmentFactory: FragmentFactory
-) : RemyndNavigator {
-    override fun showRemyndList() {
+) : Navigator {
+    override fun showRemindList() {
         activity.supportFragmentManager
             .beginTransaction()
             .replace(
@@ -32,7 +27,7 @@ class RemyndNavigatorImpl(
             .commit()
     }
 
-    override fun showRemyndForm() {
+    override fun showRemindForm() {
         activity.supportFragmentManager
             .beginTransaction()
             .add(
@@ -47,7 +42,7 @@ class RemyndNavigatorImpl(
             .commit()
     }
 
-    override fun showRemyndDetails(id: Long) {
+    override fun showRemindDetails(id: Long) {
         val fragment = fragmentFactory.instantiate(
             activity.classLoader,
             RemyndDetailsFragment::class.java.name

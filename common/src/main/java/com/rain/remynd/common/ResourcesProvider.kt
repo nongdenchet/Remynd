@@ -1,4 +1,4 @@
-package com.rain.remynd.support
+package com.rain.remynd.common
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
@@ -13,12 +13,4 @@ class ResourcesProviderImpl(private val resources: Resources) : ResourcesProvide
         resources.getString(id, *args)
 
     override fun getString(@StringRes id: Int): String = resources.getString(id)
-}
-
-class MockResourcesProvider : ResourcesProvider {
-    override fun getString(@StringRes id: Int, vararg args: Any): String {
-        return "$id ${args.joinToString(";")}"
-    }
-
-    override fun getString(@StringRes id: Int): String = id.toString()
 }

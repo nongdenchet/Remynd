@@ -1,4 +1,4 @@
-package com.rain.remynd.support
+package com.rain.remynd.common
 
 import android.content.Context
 import android.os.Build

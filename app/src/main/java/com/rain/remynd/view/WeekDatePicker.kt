@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import com.rain.remynd.R
-import com.rain.remynd.support.indexToDateSymbol
+import com.rain.remynd.common.indexToDateSymbol
 import java.util.Calendar
 
 data class DateItem(val dateInWeek: Int, val checked: Boolean) : Parcelable {
@@ -40,7 +40,7 @@ private class SavedState : View.BaseSavedState {
 
     constructor(source: Parcel) : super(source) {
         items = mutableListOf<DateItem>().apply {
-            source.readList(this, DateItem::class.java.classLoader)
+            source.readList(this as List<*>, DateItem::class.java.classLoader)
         }
     }
 

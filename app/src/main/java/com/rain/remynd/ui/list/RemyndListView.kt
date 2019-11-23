@@ -11,5 +11,6 @@ interface RemyndListView {
     fun renderEditMode(value: Boolean)
     fun renderActiveCount(value: String)
     fun showError(content: String, position: Int)
+    fun showMessage(content: String)
     fun renderIntro(value: Boolean)
 }

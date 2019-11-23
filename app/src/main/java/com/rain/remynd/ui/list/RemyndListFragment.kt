@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.rain.remynd.R
 import com.rain.remynd.databinding.FragmentRemyndListBinding
-import com.rain.remynd.support.BackHandler
-import com.rain.remynd.support.clicks
+import com.rain.remynd.navigator.BackHandler
+import com.rain.remynd.common.clicks
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlin.math.abs
@@ -127,6 +127,10 @@ class RemyndListFragment(
 
     override fun showError(content: String, position: Int) {
         remyndListAdapter.notifyItemChanged(position)
+        showMessage(content)
+    }
+
+    override fun showMessage(content: String) {
         context?.run { Toast.makeText(this, content, Toast.LENGTH_LONG).show() }
     }
 

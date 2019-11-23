@@ -15,7 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rain.remynd.R
 import com.rain.remynd.RemyndApp
-import com.rain.remynd.support.formatDuration
+import com.rain.remynd.common.formatDuration
 import com.rain.remynd.ui.RemyndActivity
 import java.util.Calendar
 
@@ -28,7 +28,7 @@ enum class ReceiverType {
     ALARM, REPEAT, DISMISS, UNKNOWN;
 
     companion object {
-        fun getByVal(value: String): ReceiverType {
+        fun getByVal(value: String?): ReceiverType {
             return values().firstOrNull { it.name == value } ?: UNKNOWN
         }
     }

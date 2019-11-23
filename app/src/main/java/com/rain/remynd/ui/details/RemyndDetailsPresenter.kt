@@ -5,8 +5,9 @@ import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.R
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.alarm.AlarmScheduler
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.toAlarm
+import com.rain.remynd.common.RemindFormatUtils
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.alarm.toAlarm
 import com.rain.remynd.view.DateItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ class RemyndDetailsPresenter(
     private val view: RemyndDetailsView,
     private val remyndDao: RemyndDao,
     private val alarmScheduler: AlarmScheduler,
+    private val remindFormatUtils: RemindFormatUtils,
     private val resourcesProvider: ResourcesProvider
 ) : LifecycleObserver {
     private val reducer = RemyndReducer()
@@ -147,15 +149,16 @@ class RemyndDetailsPresenter(
             val time = Calendar.getInstance()
             time.timeInMillis = entity.triggerAt
 
-            val dateConfig = if (!entity.daysOfWeek.isNullOrEmpty()) {
-                val daysOfWeek = entity.daysOfWeek
+            val daysOfWeek = entity.daysOfWeek
+            val dateConfig = if (!daysOfWeek.isNullOrEmpty()) {
+                val daysOfWeekList = daysOfWeek
                     .split(";")
                     .mapNotNull { it.toIntOrNull() }
 
                 DateConfig.RepeatDate(
                     hour = time.get(Calendar.HOUR_OF_DAY),
                     minute = time.get(Calendar.MINUTE),
-                    daysOfWeek = daysOfWeek
+                    daysOfWeek = daysOfWeekList
                 )
             } else {
                 DateConfig.SingleDate(time)
@@ -204,14 +207,14 @@ class RemyndDetailsPresenter(
 
             if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
                 scope.launch(Dispatchers.Main) {
-                    view.showError(resourcesProvider.getString(R.string.time_past_error))
+                    view.showMessage(resourcesProvider.getString(R.string.time_past_error))
                 }
                 return@launch
             }
 
             if (entity.content.isBlank()) {
                 scope.launch(Dispatchers.Main) {
-                    view.showError(resourcesProvider.getString(R.string.content_empty))
+                    view.showMessage(resourcesProvider.getString(R.string.content_empty))
                 }
                 return@launch
             }
@@ -225,7 +228,10 @@ class RemyndDetailsPresenter(
             else alarmScheduler.cancel(entity.toAlarm())
 
             // Exit Fragment
-            scope.launch(Dispatchers.Main) { view.goBack() }
+            scope.launch(Dispatchers.Main) {
+                view.goBack()
+                view.showMessage(remindFormatUtils.execute(entity.triggerAt))
+            }
         }
     }
 }

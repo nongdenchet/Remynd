@@ -16,6 +16,8 @@
     <string name="content_empty">Content is empty</string>
     <string name="intro">Welcome to Remynd\nClick to add first reminder</string>
     <string name="reminder">You have a reminder</string>
+    <string name="alarm_time_scheduled">Alarm is set for %1s hours and %2s minutes from now</string>
+    <string name="alarm_date_scheduled">Alarm is set on %1s</string>
     <string name="everyday">Everyday</string>
     <string name="dismiss">Dismiss</string>
 </resources>

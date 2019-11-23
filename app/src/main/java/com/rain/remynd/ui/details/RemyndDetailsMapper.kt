@@ -1,9 +1,9 @@
 package com.rain.remynd.ui.details
 
 import com.rain.remynd.data.RemyndEntity
-import com.rain.remynd.support.formatDuration
-import com.rain.remynd.support.formatTime
-import com.rain.remynd.support.indexToDate
+import com.rain.remynd.common.formatDuration
+import com.rain.remynd.common.formatTime
+import com.rain.remynd.common.indexToDate
 import com.rain.remynd.view.DateItem
 import java.util.Calendar
 

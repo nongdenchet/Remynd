@@ -6,7 +6,6 @@ import androidx.core.app.JobIntentService
 import com.rain.remynd.RemyndApp
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
-import com.rain.remynd.support.toAlarm
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 import javax.inject.Inject
@@ -45,11 +44,12 @@ class AlarmIntentService : JobIntentService() {
             }
 
             Log.d(tag, "${Thread.currentThread().name}: onHandleWork $entity")
-            if (entity.daysOfWeek.isNullOrEmpty()) {
+            val daysOfWeek = entity.daysOfWeek
+            if (daysOfWeek.isNullOrEmpty()) {
                 remyndDao.update(entity.copy(active = false))
             } else {
                 val time = Calendar.getInstance().apply { timeInMillis = entity.triggerAt }
-                val daySet = entity.daysOfWeek
+                val daySet = daysOfWeek
                     .split(";")
                     .mapNotNull { it.toIntOrNull() }
                     .toSet()

@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.core.app.JobIntentService
 import com.rain.remynd.RemyndApp
 import com.rain.remynd.data.RemyndDao
-import com.rain.remynd.support.toAlarm
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

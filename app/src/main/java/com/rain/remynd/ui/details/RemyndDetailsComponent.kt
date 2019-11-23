@@ -2,7 +2,9 @@ package com.rain.remynd.ui.details
 
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.alarm.AlarmScheduler
-import com.rain.remynd.support.ResourcesProvider
+import com.rain.remynd.common.RemindFormatUtils
+import com.rain.remynd.common.RemindFormatUtilsImpl
+import com.rain.remynd.common.ResourcesProvider
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -19,15 +21,24 @@ object RemyndDetailsModule {
     @Provides
     @JvmStatic
     @RemyndDetailsScope
+    fun provideRemindFormatUtils(resourcesProvider: ResourcesProvider): RemindFormatUtils {
+        return RemindFormatUtilsImpl(resourcesProvider)
+    }
+
+    @Provides
+    @JvmStatic
+    @RemyndDetailsScope
     fun providePresenter(
         fragment: RemyndDetailsFragment,
         remyndDao: RemyndDao,
         alarmScheduler: AlarmScheduler,
+        remindFormatUtils: RemindFormatUtils,
         resourcesProvider: ResourcesProvider
     ) = RemyndDetailsPresenter(
         fragment,
         remyndDao,
         alarmScheduler,
+        remindFormatUtils,
         resourcesProvider
     )
 }

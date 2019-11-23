@@ -19,11 +19,11 @@ import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
-import com.rain.remynd.support.ResourcesProvider
-import com.rain.remynd.support.ResourcesProviderImpl
-import com.rain.remynd.support.VibrateUtils
-import com.rain.remynd.support.VibrateUtilsImpl
-import com.rain.remynd.ui.RemyndNavigator
+import com.rain.remynd.common.ResourcesProvider
+import com.rain.remynd.common.ResourcesProviderImpl
+import com.rain.remynd.common.VibrateUtils
+import com.rain.remynd.common.VibrateUtilsImpl
+import com.rain.remynd.navigator.Navigator
 import com.rain.remynd.ui.execute
 import com.rain.remynd.ui.recyclerViewCount
 import com.rain.remynd.ui.withRecyclerView
@@ -48,7 +48,7 @@ class RemyndListFragmentTest {
     private lateinit var remyndDao: RemyndDao
 
     @Mock
-    private lateinit var navigator: RemyndNavigator
+    private lateinit var navigator: Navigator
     @Mock
     private lateinit var scheduler: AlarmScheduler
 
@@ -62,7 +62,7 @@ class RemyndListFragmentTest {
         remyndDao = db.dao()
         factory = MockFragmentFactoryImpl(object : RemyndListDependency {
             override fun remyndDao(): RemyndDao = remyndDao
-            override fun remyndNavigator(): RemyndNavigator = navigator
+            override fun remyndNavigator(): Navigator = navigator
             override fun alarmScheduler(): AlarmScheduler = scheduler
             override fun vibrateUtils(): VibrateUtils = VibrateUtilsImpl(context)
             override fun resourceProvider(): ResourcesProvider =
@@ -152,7 +152,7 @@ class RemyndListFragmentTest {
 
         onView(withId(R.id.ivAdd)).perform(click())
         execute {
-            verify(navigator).showRemyndForm()
+            verify(navigator).showRemindForm()
         }
     }
 
@@ -166,7 +166,7 @@ class RemyndListFragmentTest {
 
         onView(withRecyclerView(R.id.rvReminds).atPosition(0)).perform(click())
         execute {
-            verify(navigator).showRemyndDetails(1)
+            verify(navigator).showRemindDetails(1)
         }
     }
 

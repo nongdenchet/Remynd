@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.R
-import com.rain.remynd.support.BackHandler
-import com.rain.remynd.support.dependency
+import com.rain.remynd.navigator.BackHandler
+import com.rain.remynd.navigator.Navigator
+import com.rain.remynd.common.dependency
 import javax.inject.Inject
 
 class RemyndActivity : AppCompatActivity() {
@@ -14,7 +15,7 @@ class RemyndActivity : AppCompatActivity() {
     @Inject
     internal lateinit var fragmentFactory: FragmentFactory
     @Inject
-    internal lateinit var navigator: RemyndNavigator
+    internal lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUpDependency()
@@ -22,7 +23,7 @@ class RemyndActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remynd)
         if (savedInstanceState == null) {
-            navigator.showRemyndList()
+            navigator.showRemindList()
         }
     }
 
