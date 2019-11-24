@@ -6,7 +6,7 @@ ext {
     appVersionCode = 1
     appVersionName = "1.0.0"
 
-    kotlinVersion = '1.3.50'
+    kotlinVersion = '1.3.60'
     coroutinesVersion = '1.3.2'
     gradleBuildToolVersion = '3.5.2'
     daggerVersion = '2.25.2'
