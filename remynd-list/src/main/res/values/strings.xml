@@ -1,0 +1,7 @@
+<resources>
+    <string name="remynd_list_reminds">Reminds</string>
+    <string name="remynd_list_active_count">Total %1d alarms active</string>
+    <string name="remynd_list_time_past_error">"Selected time is in the past"</string>
+    <string name="remynd_list_intro">Welcome to Remynd\nClick to add first reminder</string>
+    <string name="remynd_list_everyday">Everyday</string>
+</resources>

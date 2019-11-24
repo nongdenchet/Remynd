@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/space_4">
+
+        <LinearLayout
+            android:id="@+id/flTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_10"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvSelectedTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:letterSpacing="0.05"
+                android:lines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_8"
+                tools:text="07:30" />
+
+            <TextView
+                android:id="@+id/tvClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/space_1"
+                android:layout_marginBottom="@dimen/space_1"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:lines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_2"
+                tools:text="AM" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/space_1"
+            android:layout_marginEnd="@dimen/space_1"
+            app:layout_constraintBottom_toBottomOf="@id/flTime"
+            app:layout_constraintEnd_toStartOf="@id/sEnabled"
+            app:layout_constraintStart_toEndOf="@id/flTime"
+            app:layout_constraintTop_toTopOf="@id/flTime" />
+
+        <Switch
+            android:id="@+id/sEnabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:layout_constraintBottom_toBottomOf="@id/flTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/flTime"
+            tools:checked="true" />
+
+        <TextView
+            android:id="@+id/tvDateInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCalendar"
+            tools:text="Mon, Wed" />
+
+        <ImageView
+            android:id="@+id/ivCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_calendar"
+            android:padding="@dimen/space_1"
+            android:layout_marginTop="@dimen/space_8"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flTime"
+            tools:ignore="ContentDescription" />
+
+        <com.rain.remynd.view.WeekDatePicker
+            android:id="@+id/llDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDateInfo" />
+
+        <TextView
+            android:id="@+id/tvVibrate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_8"
+            android:layout_marginEnd="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            android:text="@string/remynd_details_vibrate"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toStartOf="@+id/sVibrate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llDates" />
+
+        <Switch
+            android:id="@+id/sVibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tvVibrate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvVibrate"
+            tools:checked="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white_50"
+            app:layout_constraintTop_toBottomOf="@id/tvVibrate" />
+
+        <TextView
+            android:id="@+id/tvRemind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_8"
+            android:layout_marginEnd="@dimen/space_1"
+            android:fontFamily="sans-serif"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4"
+            android:text="@string/remynd_details_remind_again"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toStartOf="@+id/tvRemindValue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvVibrate" />
+
+        <TextView
+            android:id="@+id/tvRemindValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:padding="@dimen/space_4"
+            android:text="@string/remynd_details_none"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_3"
+            android:theme="@android:style/ThemeOverlay.Material.Dark"
+            app:layout_constraintBottom_toBottomOf="@id/tvRemind"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvRemind" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white_50"
+            app:layout_constraintTop_toBottomOf="@id/tvRemind" />
+
+        <EditText
+            android:id="@+id/edtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_8"
+            android:autofillHints="@string/remynd_details_title"
+            android:backgroundTint="@color/white"
+            android:fontFamily="sans-serif"
+            android:hint="@string/remynd_details_title"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white_80"
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/size_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRemind" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvSave"
+            app:layout_constraintTop_toBottomOf="@id/edtTitle" />
+
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_6"
+            android:layout_marginEnd="@dimen/space_1"
+            android:background="@drawable/remynd_details_background_cancel"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:padding="@dimen/space_4"
+            android:text="@string/remynd_details_cancel"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvSave"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_1"
+            android:background="@drawable/remynd_details_background_save"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:padding="@dimen/space_4"
+            android:text="@string/remynd_details_save"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvCancel" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

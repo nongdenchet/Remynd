@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.R
+import com.rain.remynd.details.RemyndDetailsFragment
+import com.rain.remynd.list.RemyndListFragment
 import com.rain.remynd.navigator.Navigator
-import com.rain.remynd.ui.details.REMYND_ID
-import com.rain.remynd.ui.details.RemyndDetailsFragment
-import com.rain.remynd.ui.list.RemyndListFragment
+import com.rain.remynd.details.REMYND_ID
 
 class NavigatorImpl(
     private val activity: AppCompatActivity,

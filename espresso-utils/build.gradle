@@ -1,0 +1,8 @@
+apply from: '../scripts/module.gradle'
+
+dependencies {
+    implementation(
+            Libs.espresso,
+            Libs.espressoContrib,
+    )
+}

@@ -1,3 +1,4 @@
-rootProject.name='Remynd'
+rootProject.name = 'Remynd'
 
-include ':app', ':view', ':style', ':navigator', ':common', ':data', ':alarm', ':alarm-bridge'
+include ':app', ':view', ':style', ':navigator', ':common', ':data', ':alarm', ':alarm-bridge',
+        ':remynd-list', ':espresso-utils', ':remynd-details'

@@ -15,6 +15,8 @@ ext {
     appCompatVersion = '1.1.0'
     materialVersion = '1.0.0'
     constraintlayoutVersion = '1.1.3'
+    databindingVersion = '3.5.2'
+
     junitVersion = '4.12'
     androidJUnitVersion = '1.1.1'
     androidTestCoreVersion = '1.2.0'
@@ -25,35 +27,36 @@ ext {
     dateTimePickerVersion = '4.2.3'
 
     Libs = [
-            kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
-            coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
-            coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
-            dagger            : "com.google.dagger:dagger:$daggerVersion",
-            daggerCompiler    : "com.google.dagger:dagger-compiler:$daggerVersion",
-            room              : "androidx.room:room-ktx:$roomVersion",
-            roomRuntime       : "androidx.room:room-runtime:$roomVersion",
-            roomCompiler      : "androidx.room:room-compiler:$roomVersion",
-            liveDataCore      : "androidx.lifecycle:lifecycle-livedata-core:$lifeCycleVersion",
-            lifecycleRuntime  : "androidx.lifecycle:lifecycle-runtime:$lifeCycleVersion",
-            lifecycleCompiler : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
-            annotation        : "androidx.annotation:annotation:$appCompatVersion",
-            constraintlayout  : "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion",
-            appcompat         : "androidx.appcompat:appcompat:$appCompatVersion",
-            androidKtx        : "androidx.core:core-ktx:$appCompatVersion",
-            material          : "com.google.android.material:material:$materialVersion",
-            fragment          : "androidx.fragment:fragment-ktx:$appCompatVersion",
-            recyclerview      : "androidx.recyclerview:recyclerview:$appCompatVersion",
-            timeDurationPicker: "mobi.upod:time-duration-picker:$timeDurationPickerVersion",
-            dateTimePicker    : "com.wdullaer:materialdatetimepicker:$dateTimePickerVersion",
+            kotlin             : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+            coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+            coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
+            dagger             : "com.google.dagger:dagger:$daggerVersion",
+            daggerCompiler     : "com.google.dagger:dagger-compiler:$daggerVersion",
+            room               : "androidx.room:room-ktx:$roomVersion",
+            roomRuntime        : "androidx.room:room-runtime:$roomVersion",
+            roomCompiler       : "androidx.room:room-compiler:$roomVersion",
+            liveDataCore       : "androidx.lifecycle:lifecycle-livedata-core:$lifeCycleVersion",
+            lifecycleRuntime   : "androidx.lifecycle:lifecycle-runtime:$lifeCycleVersion",
+            lifecycleCompiler  : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
+            annotation         : "androidx.annotation:annotation:$appCompatVersion",
+            constraintlayout   : "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion",
+            appcompat          : "androidx.appcompat:appcompat:$appCompatVersion",
+            androidKtx         : "androidx.core:core-ktx:$appCompatVersion",
+            material           : "com.google.android.material:material:$materialVersion",
+            fragment           : "androidx.fragment:fragment-ktx:$appCompatVersion",
+            recyclerview       : "androidx.recyclerview:recyclerview:$appCompatVersion",
+            timeDurationPicker : "mobi.upod:time-duration-picker:$timeDurationPickerVersion",
+            dateTimePicker     : "com.wdullaer:materialdatetimepicker:$dateTimePickerVersion",
+            dataBindingCompiler: "androidx.databinding:databinding-compiler:$databindingVersion",
 
-            junit             : "junit:junit:$junitVersion",
-            androidJUnit      : "androidx.test.ext:junit:$androidJUnitVersion",
-            mockito           : "org.mockito:mockito-core:$mockitoVersion",
-            mockitoAndroid    : "org.mockito:mockito-android:$mockitoVersion",
-            androidTestCore   : "androidx.test:core:$androidTestCoreVersion",
-            robolectric       : "org.robolectric:robolectric:$robolectricVersion",
-            fragmentTest      : "androidx.fragment:fragment-testing:$appCompatVersion",
-            espresso          : "androidx.test.espresso:espresso-core:$espressoVersion",
-            espressoContrib   : "androidx.test.espresso:espresso-contrib:$espressoVersion",
+            junit              : "junit:junit:$junitVersion",
+            androidJUnit       : "androidx.test.ext:junit:$androidJUnitVersion",
+            mockito            : "org.mockito:mockito-core:$mockitoVersion",
+            mockitoAndroid     : "org.mockito:mockito-android:$mockitoVersion",
+            androidTestCore    : "androidx.test:core:$androidTestCoreVersion",
+            robolectric        : "org.robolectric:robolectric:$robolectricVersion",
+            fragmentTest       : "androidx.fragment:fragment-testing:$appCompatVersion",
+            espresso           : "androidx.test.espresso:espresso-core:$espressoVersion",
+            espressoContrib    : "androidx.test.espresso:espresso-contrib:$espressoVersion",
     ]
 }

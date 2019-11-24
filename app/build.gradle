@@ -44,18 +44,11 @@ android {
 dependencies {
     implementation(
             Libs.kotlin,
-            Libs.coroutines,
-            Libs.coroutinesAndroid,
             Libs.dagger,
             Libs.roomRuntime,
-            Libs.lifecycleRuntime,
             Libs.appcompat,
-            Libs.material,
             Libs.fragment,
-            Libs.recyclerview,
             Libs.androidKtx,
-            Libs.constraintlayout,
-            Libs.dateTimePicker,
 
             project(':navigator'),
             project(':common'),
@@ -64,22 +57,9 @@ dependencies {
             project(':style'),
             project(':alarm'),
             project(':alarm-bridge'),
+            project(':remynd-list'),
+            project(':remynd-details'),
     )
 
-    kapt(
-            Libs.daggerCompiler,
-            Libs.lifecycleCompiler,
-    )
-
-    debugImplementation(Libs.fragmentTest) {
-        exclude group: 'androidx.test', module: 'core'
-    }
-
-    androidTestImplementation(
-            Libs.mockitoAndroid,
-            Libs.androidJUnit,
-            Libs.androidTestCore,
-            Libs.espresso,
-            Libs.espressoContrib,
-    )
+    kapt Libs.daggerCompiler
 }

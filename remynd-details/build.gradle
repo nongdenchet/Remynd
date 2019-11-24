@@ -1,0 +1,60 @@
+apply from: '../scripts/module.gradle'
+
+android {
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        animationsDisabled = true
+    }
+}
+
+dependencies {
+    implementation(
+            Libs.kotlin,
+            Libs.coroutines,
+            Libs.coroutinesAndroid,
+            Libs.dagger,
+            Libs.appcompat,
+            Libs.material,
+            Libs.fragment,
+            Libs.androidKtx,
+            Libs.constraintlayout,
+            Libs.dateTimePicker,
+
+            project(':navigator'),
+            project(':common'),
+            project(':data'),
+            project(':style'),
+            project(':view'),
+            project(':alarm-bridge'),
+    )
+
+    kapt Libs.daggerCompiler,
+
+    debugImplementation(Libs.fragmentTest) {
+        exclude group: 'androidx.test', module: 'core'
+    }
+
+    kaptAndroidTest Libs.dataBindingCompiler
+
+    androidTestImplementation(
+            Libs.roomRuntime,
+            Libs.mockitoAndroid,
+            Libs.androidJUnit,
+            Libs.androidTestCore,
+            Libs.espresso,
+            Libs.espressoContrib,
+
+            project(':espresso-utils'),
+    )
+}

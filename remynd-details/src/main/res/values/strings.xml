@@ -1,0 +1,11 @@
+<resources>
+    <string name="remynd_details_cancel">Cancel</string>
+    <string name="remynd_details_save">Save</string>
+    <string name="remynd_details_title">Title</string>
+    <string name="remynd_details_repeat">Repeat</string>
+    <string name="remynd_details_vibrate">Vibrate</string>
+    <string name="remynd_details_remind_again">Remind again</string>
+    <string name="remynd_details_none">None</string>
+    <string name="remynd_details_content_empty">Content is empty</string>
+    <string name="remynd_details_time_past_error">"Selected time is in the past"</string>
+</resources>

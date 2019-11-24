@@ -8,9 +8,9 @@ import com.rain.remynd.alarm.bridge.AlarmScheduler
 import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.common.VibrateUtils
 import com.rain.remynd.data.RemyndDao
+import com.rain.remynd.details.RemyndDetailsDependency
+import com.rain.remynd.list.RemyndListDependency
 import com.rain.remynd.navigator.Navigator
-import com.rain.remynd.ui.details.RemyndDetailsDependency
-import com.rain.remynd.ui.list.RemyndListDependency
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module

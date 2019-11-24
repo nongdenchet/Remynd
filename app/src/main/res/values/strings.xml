@@ -1,18 +1,3 @@
 <resources>
     <string name="app_name">Remynd</string>
-    <string name="reminds">Reminds</string>
-    <string name="active_count">Total %1d alarms active</string>
-    <string name="cancel">Cancel</string>
-    <string name="save">Save</string>
-    <string name="title">Title</string>
-    <string name="repeat">Repeat</string>
-    <string name="vibrate">Vibrate</string>
-    <string name="remind_again">Remind again</string>
-    <string name="time_past_error">"Selected time is in the past"</string>
-    <string name="none">None</string>
-    <string name="content_empty">Content is empty</string>
-    <string name="intro">Welcome to Remynd\nClick to add first reminder</string>
-    <string name="alarm_time_scheduled">Alarm is set for %1s hours and %2s minutes from now</string>
-    <string name="alarm_date_scheduled">Alarm is set on %1s</string>
-    <string name="everyday">Everyday</string>
 </resources>
