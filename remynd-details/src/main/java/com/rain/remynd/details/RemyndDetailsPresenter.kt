@@ -201,7 +201,7 @@ internal class RemyndDetailsPresenter(
         Log.d(tag, "save")
         scope.launch(Dispatchers.IO) {
             val form = form.asFlow().first()
-            val entity = mapper.toEntity(form)
+            var entity = mapper.toEntity(form)
 
             if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
                 scope.launch(Dispatchers.Main) {
@@ -218,12 +218,18 @@ internal class RemyndDetailsPresenter(
             }
 
             // Update DB
-            if (entity.id != 0L) remyndDao.update(entity)
-            else remyndDao.insert(entity)
+            if (entity.id != 0L) {
+                remyndDao.update(entity)
+            } else {
+                entity = entity.copy(id = remyndDao.insert(entity))
+            }
 
             // Schedule alarm
-            if (entity.active) alarmScheduler.schedule(entity.toAlarm())
-            else alarmScheduler.cancel(entity.toAlarm())
+            if (entity.active) {
+                alarmScheduler.schedule(entity.toAlarm())
+            } else {
+                alarmScheduler.cancel(entity.toAlarm())
+            }
 
             // Exit Fragment
             scope.launch(Dispatchers.Main) {

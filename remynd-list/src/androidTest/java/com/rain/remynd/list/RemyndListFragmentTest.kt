@@ -15,9 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.rain.remynd.alarm.bridge.AlarmScheduler
-import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.common.ResourcesProviderImpl
-import com.rain.remynd.common.VibrateUtils
 import com.rain.remynd.common.VibrateUtilsImpl
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao
@@ -60,12 +58,11 @@ class RemyndListFragmentTest {
             .build()
         remyndDao = db.dao()
         factory = MockFragmentFactoryImpl(object : RemyndListDependency {
-            override fun remyndDao(): RemyndDao = remyndDao
-            override fun remyndNavigator(): Navigator = navigator
-            override fun alarmScheduler(): AlarmScheduler = scheduler
-            override fun vibrateUtils(): VibrateUtils = VibrateUtilsImpl(context)
-            override fun resourceProvider(): ResourcesProvider =
-                ResourcesProviderImpl(context.resources)
+            override fun remyndDao() = remyndDao
+            override fun remyndNavigator() = navigator
+            override fun alarmScheduler() = scheduler
+            override fun vibrateUtils() = VibrateUtilsImpl(context)
+            override fun resourceProvider() = ResourcesProviderImpl(context.resources)
         })
     }
 
@@ -163,7 +160,9 @@ class RemyndListFragmentTest {
             themeResId = R.style.AppTheme
         )
 
-        onView(withRecyclerView(R.id.rvReminds).atPosition(0)).perform(click())
+        execute {
+            onView(withRecyclerView(R.id.rvReminds).atPosition(0)).perform(click())
+        }
         execute {
             verify(navigator).showRemindDetails(1)
         }
