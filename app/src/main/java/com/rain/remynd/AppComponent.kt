@@ -6,11 +6,11 @@ import com.rain.remynd.alarm.AlarmScheduler
 import com.rain.remynd.alarm.AlarmSchedulerImpl
 import com.rain.remynd.alarm.BootIntentService
 import com.rain.remynd.common.AppScope
-import com.rain.remynd.data.StorageModule
 import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.common.ResourcesProviderImpl
 import com.rain.remynd.common.VibrateUtils
 import com.rain.remynd.common.VibrateUtilsImpl
+import com.rain.remynd.data.StorageModule
 import com.rain.remynd.ui.RemyndDependency
 import dagger.BindsInstance
 import dagger.Component
@@ -21,22 +21,18 @@ import dagger.Provides
 object AppModule {
 
     @Provides
-    @JvmStatic
     @AppScope
     fun provideContext(app: RemyndApp): Context = app
 
     @Provides
-    @JvmStatic
     @AppScope
     fun provideAlarmScheduler(context: Context): AlarmScheduler = AlarmSchedulerImpl(context)
 
     @Provides
-    @JvmStatic
     @AppScope
     fun provideVibrateUtils(context: Context): VibrateUtils = VibrateUtilsImpl(context)
 
     @Provides
-    @JvmStatic
     @AppScope
     fun provideResourcesProvider(context: Context): ResourcesProvider {
         return ResourcesProviderImpl(context.resources)

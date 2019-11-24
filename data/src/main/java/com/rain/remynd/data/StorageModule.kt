@@ -8,9 +8,7 @@ import dagger.Provides
 
 @Module
 object StorageModule {
-
     @Provides
-    @JvmStatic
     @AppScope
     fun provideRoom(context: Context): RemyndDB {
         return Room.databaseBuilder(
@@ -21,7 +19,6 @@ object StorageModule {
     }
 
     @Provides
-    @JvmStatic
     @AppScope
     fun provideRemyndDao(db: RemyndDB): RemyndDao = db.dao()
 }

@@ -2,11 +2,11 @@ package com.rain.remynd.ui.list
 
 import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.alarm.AlarmScheduler
-import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.common.RemindFormatUtils
 import com.rain.remynd.common.RemindFormatUtilsImpl
 import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.common.VibrateUtils
+import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.navigator.Navigator
 import dagger.BindsInstance
 import dagger.Component
@@ -23,12 +23,10 @@ annotation class RemyndListScope
 object RemyndListModule {
 
     @Provides
-    @JvmStatic
     @RemyndListScope
     fun provideAdapter() = RemyndListAdapter()
 
     @Provides
-    @JvmStatic
     @RemyndListScope
     fun providePresenter(
         fragment: RemyndListFragment,
@@ -49,20 +47,17 @@ object RemyndListModule {
     )
 
     @Provides
-    @JvmStatic
     @RemyndListScope
     fun provideRemindFormatUtils(resourcesProvider: ResourcesProvider): RemindFormatUtils {
         return RemindFormatUtilsImpl(resourcesProvider)
     }
 
     @Provides
-    @JvmStatic
     @IntoSet
     @RemyndListScope
     fun providePresenterObserver(presenter: RemyndListPresenter): LifecycleObserver = presenter
 
     @Provides
-    @JvmStatic
     @IntoSet
     @RemyndListScope
     fun provideAdapterObserver(adapter: RemyndListAdapter): LifecycleObserver = adapter
