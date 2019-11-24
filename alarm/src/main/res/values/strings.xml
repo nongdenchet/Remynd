@@ -1,0 +1,7 @@
+<resources>
+    <string name="alarm_resend">Resend after %1s</string>
+    <string name="alarm_channel_name">channel_name</string>
+    <string name="alarm_channel_description">channel_description</string>
+    <string name="alarm_reminder">You have a reminder</string>
+    <string name="alarm_dismiss">Dismiss</string>
+</resources>

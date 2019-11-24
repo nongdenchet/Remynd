@@ -17,9 +17,7 @@ fun formatDuration(duration: Long?): String {
             String.format("%dm", TimeUnit.MILLISECONDS.toMinutes(duration))
         else -> {
             val hour = TimeUnit.MILLISECONDS.toHours(duration)
-            val minuteMilliseconds = duration - TimeUnit.HOURS.toMillis(hour)
-            val minute = TimeUnit.MILLISECONDS.toMinutes(minuteMilliseconds)
-
+            val minute = TimeUnit.MILLISECONDS.toMinutes(duration - TimeUnit.HOURS.toMillis(hour))
             String.format("%dh : %dm", hour, minute)
         }
     }

@@ -55,12 +55,15 @@ dependencies {
             Libs.recyclerview,
             Libs.androidKtx,
             Libs.constraintlayout,
-            Libs.timeDurationPicker,
             Libs.dateTimePicker,
 
             project(':navigator'),
             project(':common'),
             project(':data'),
+            project(':view'),
+            project(':style'),
+            project(':alarm'),
+            project(':alarm-bridge'),
     )
 
     kapt(

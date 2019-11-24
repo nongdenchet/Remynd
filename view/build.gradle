@@ -1,0 +1,12 @@
+apply from: '../scripts/module.gradle'
+
+dependencies {
+    implementation(
+            Libs.kotlin,
+            Libs.appcompat,
+            Libs.timeDurationPicker,
+
+            project(':common'),
+            project(':style'),
+    )
+}

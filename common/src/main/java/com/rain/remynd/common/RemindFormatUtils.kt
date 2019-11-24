@@ -8,25 +8,24 @@ interface RemindFormatUtils {
     fun execute(triggerAt: Long): String
 }
 
-class RemindFormatUtilsImpl(private val resourcesProvider: ResourcesProvider) : RemindFormatUtils {
+class RemindFormatUtilsImpl(
+    private val resourcesProvider: ResourcesProvider,
+    private val currentTime: () -> Calendar = { Calendar.getInstance() }
+) : RemindFormatUtils {
     override fun execute(triggerAt: Long): String {
-        val current = Calendar.getInstance()
-        if (triggerAt < current.timeInMillis) {
-            throw IllegalArgumentException("triggerAt is in the past")
-        }
+        val current = currentTime()
+        require(triggerAt >= current.timeInMillis) { "triggerAt is in the past" }
 
-        if (triggerAt - current.timeInMillis >= TimeUnit.DAYS.toMillis(1)) {
+        val duration = triggerAt - current.timeInMillis
+        if (duration >= TimeUnit.DAYS.toMillis(1)) {
             return resourcesProvider.getString(
                 R.string.alarm_date_scheduled,
                 formatTime("EEEE, dd MMMM", Date(triggerAt))
             )
         }
 
-        val date = Date(triggerAt)
-        return resourcesProvider.getString(
-            R.string.alarm_time_scheduled,
-            formatTime("hh", date),
-            formatTime("mm", date)
-        )
+        val hour = TimeUnit.MILLISECONDS.toHours(duration)
+        val minute = TimeUnit.MILLISECONDS.toMinutes(duration - TimeUnit.HOURS.toMillis(hour))
+        return resourcesProvider.getString(R.string.alarm_time_scheduled, hour, minute)
     }
 }

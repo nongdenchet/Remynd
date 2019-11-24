@@ -8,16 +8,11 @@
     <string name="repeat">Repeat</string>
     <string name="vibrate">Vibrate</string>
     <string name="remind_again">Remind again</string>
-    <string name="resend">Resend after %1s</string>
     <string name="time_past_error">"Selected time is in the past"</string>
     <string name="none">None</string>
-    <string name="channel_name">channel_name</string>
-    <string name="channel_description">channel_description</string>
     <string name="content_empty">Content is empty</string>
     <string name="intro">Welcome to Remynd\nClick to add first reminder</string>
-    <string name="reminder">You have a reminder</string>
     <string name="alarm_time_scheduled">Alarm is set for %1s hours and %2s minutes from now</string>
     <string name="alarm_date_scheduled">Alarm is set on %1s</string>
     <string name="everyday">Everyday</string>
-    <string name="dismiss">Dismiss</string>
 </resources>

@@ -7,6 +7,7 @@ dependencies {
             Libs.dagger,
             Libs.room,
             Libs.roomRuntime,
+
             project(':common'),
     )
 

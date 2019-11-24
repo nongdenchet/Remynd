@@ -1,6 +1,3 @@
 rootProject.name='Remynd'
-include ':app'
-include ':navigator'
-include ':common'
-include ':common'
-include ':data'
+
+include ':app', ':view', ':style', ':navigator', ':common', ':data', ':alarm', ':alarm-bridge'

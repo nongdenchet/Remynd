@@ -1,0 +1,19 @@
+apply from: '../scripts/module.gradle'
+
+dependencies {
+    implementation(
+            Libs.kotlin,
+            Libs.coroutines,
+            Libs.appcompat,
+            Libs.dagger,
+
+            project(':common'),
+            project(':alarm-bridge'),
+            project(':data'),
+            project(':style'),
+    )
+
+    kapt(
+            Libs.daggerCompiler,
+    )
+}
