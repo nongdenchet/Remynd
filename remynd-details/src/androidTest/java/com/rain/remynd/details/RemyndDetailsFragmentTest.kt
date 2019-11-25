@@ -34,6 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.mockito.Mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.util.Calendar
@@ -123,6 +124,7 @@ class RemyndDetailsFragmentTest {
 
     @Test
     fun testCreateNewRemind() {
+        mockData()
         launchFragmentInContainer<RemyndDetailsFragment>(
             factory = factory,
             themeResId = R.style.AppTheme
@@ -132,20 +134,18 @@ class RemyndDetailsFragmentTest {
             typeText("Go to school"),
             closeSoftKeyboard()
         )
-        onView(withId(R.id.sVibrate)).perform(click())
         onView(withId(R.id.tvSave)).perform(click())
 
         runBlocking {
-            val entity = remyndDao.get(1)!!
+            val entity = remyndDao.get(2)!!
             assertEquals("Go to school", entity.content)
             assertTrue(entity.active)
-            assertTrue(entity.vibrate)
-            verify(scheduler).schedule(
+            verify(scheduler, times(1)).schedule(
                 Alarm(
-                    id = 1,
+                    id = 2,
                     content = "Go to school",
                     triggerAt = entity.triggerAt,
-                    vibrate = true,
+                    vibrate = false,
                     interval = null
                 )
             )
