@@ -1,6 +1,6 @@
 package com.rain.remynd.alarm
 
-import com.rain.remynd.alarm.bridge.Alarm
+import com.rain.remynd.alarm.scheduler.Alarm
 import com.rain.remynd.data.RemyndEntity
 
 internal const val MESSAGE = "MESSAGE"

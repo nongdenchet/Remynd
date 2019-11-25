@@ -1,4 +1,4 @@
-package com.rain.remynd.alarm.bridge
+package com.rain.remynd.alarm.scheduler
 
 data class Alarm(
     val id: Long,

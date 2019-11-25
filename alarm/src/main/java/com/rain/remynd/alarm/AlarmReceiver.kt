@@ -14,8 +14,8 @@ import android.util.Log
 import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.rain.remynd.alarm.bridge.Alarm
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.Alarm
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.dependency
 import com.rain.remynd.common.formatDuration
 import java.util.Calendar

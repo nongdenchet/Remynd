@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity
 import com.rain.remynd.common.RemindFormatUtils

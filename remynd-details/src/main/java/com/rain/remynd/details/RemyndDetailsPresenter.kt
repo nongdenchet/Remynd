@@ -3,7 +3,7 @@ package com.rain.remynd.details
 import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import com.rain.remynd.data.RemyndDao
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.RemindFormatUtils
 import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.view.DateItem

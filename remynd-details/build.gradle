@@ -36,7 +36,7 @@ dependencies {
             project(':data'),
             project(':style'),
             project(':view'),
-            project(':alarm-bridge'),
+            project(':scheduler'),
     )
 
     kapt Libs.daggerCompiler,

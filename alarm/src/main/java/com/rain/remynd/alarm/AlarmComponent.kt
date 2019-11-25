@@ -2,7 +2,7 @@ package com.rain.remynd.alarm
 
 import android.app.Activity
 import android.content.Context
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.AppScope
 import dagger.Module
 import dagger.Provides

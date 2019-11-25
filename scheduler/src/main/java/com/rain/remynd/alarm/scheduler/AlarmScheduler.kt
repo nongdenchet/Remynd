@@ -1,4 +1,4 @@
-package com.rain.remynd.alarm.bridge
+package com.rain.remynd.alarm.scheduler
 
 interface AlarmScheduler {
     fun cancel(ids: Set<Long>)

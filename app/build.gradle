@@ -55,7 +55,7 @@ dependencies {
             project(':data'),
             project(':style'),
             project(':alarm'),
-            project(':alarm-bridge'),
+            project(':scheduler'),
             project(':remynd-list'),
             project(':remynd-details'),
     )

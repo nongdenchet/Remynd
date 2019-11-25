@@ -3,7 +3,7 @@ package com.rain.remynd.alarm
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.JobIntentService
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.dependency
 import com.rain.remynd.data.RemyndDao
 import com.rain.remynd.data.RemyndEntity

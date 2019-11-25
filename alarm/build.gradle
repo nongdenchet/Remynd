@@ -8,7 +8,7 @@ dependencies {
             Libs.dagger,
 
             project(':common'),
-            project(':alarm-bridge'),
+            project(':scheduler'),
             project(':data'),
             project(':style'),
     )

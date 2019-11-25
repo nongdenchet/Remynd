@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.rain.remynd.alarm.bridge.Alarm
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.Alarm
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 
 class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
     private val alarmManager by lazy {

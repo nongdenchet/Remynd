@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentFactory
 import com.rain.remynd.impl.FragmentFactoryImpl
 import com.rain.remynd.impl.NavigatorImpl
 import com.rain.remynd.RemyndActivity
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.ResourcesProvider
 import com.rain.remynd.common.VibrateUtils
 import com.rain.remynd.data.RemyndDao

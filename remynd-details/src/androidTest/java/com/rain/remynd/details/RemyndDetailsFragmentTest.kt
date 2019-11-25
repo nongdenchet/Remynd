@@ -17,8 +17,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.rain.remynd.alarm.bridge.Alarm
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.Alarm
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.ResourcesProviderImpl
 import com.rain.remynd.data.RemyndDB
 import com.rain.remynd.data.RemyndDao

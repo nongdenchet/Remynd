@@ -1,7 +1,7 @@
 package com.rain.remynd.list
 
 import androidx.lifecycle.LifecycleObserver
-import com.rain.remynd.alarm.bridge.AlarmScheduler
+import com.rain.remynd.alarm.scheduler.AlarmScheduler
 import com.rain.remynd.common.RemindFormatUtils
 import com.rain.remynd.common.RemindFormatUtilsImpl
 import com.rain.remynd.common.ResourcesProvider
