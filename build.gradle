@@ -1,3 +1,5 @@
+apply from: 'scripts/versionCheck.gradle'
+
 buildscript {
     apply from: 'scripts/dependencies.gradle'
 
@@ -7,6 +9,7 @@ buildscript {
     }
 
     dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.27.0'
         classpath "com.android.tools.build:gradle:$gradleBuildToolVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
