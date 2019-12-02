@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion compileVersion
@@ -49,6 +50,7 @@ dependencies {
             Libs.appcompat,
             Libs.fragment,
             Libs.androidKtx,
+            Libs.crashlytics,
 
             project(':navigator'),
             project(':common'),
@@ -62,3 +64,5 @@ dependencies {
 
     kapt Libs.daggerCompiler
 }
+
+apply plugin: 'com.google.gms.google-services'

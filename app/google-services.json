@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "143630028255",
+    "firebase_url": "https://remynd-1d047.firebaseio.com",
+    "project_id": "remynd-1d047",
+    "storage_bucket": "remynd-1d047.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143630028255:android:d8c216470000777c08086a",
+        "android_client_info": {
+          "package_name": "com.rain.remynd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "143630028255-uk4o9iji0h772la4ar0fkqcbdmeff8le.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rain.remynd",
+            "certificate_hash": "36409c939f0e6e242209145b5f198c3ce46787d4"
+          }
+        },
+        {
+          "client_id": "143630028255-2c1bijcctie3549975t3p0oumo79v0g7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0sZx6JaRXyiQ1X460RVOxRyajs4ZJVOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "143630028255-2c1bijcctie3549975t3p0oumo79v0g7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

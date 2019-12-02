@@ -8,7 +8,6 @@ ext {
 
     kotlinVersion = '1.3.61'
     coroutinesVersion = '1.3.2'
-    gradleBuildToolVersion = '3.5.2'
     daggerVersion = '2.25.2'
     roomVersion = '2.2.2'
     lifeCycleVersion = '2.1.0'
@@ -16,6 +15,7 @@ ext {
     materialVersion = '1.0.0'
     constraintlayoutVersion = '1.1.3'
     databindingVersion = '3.5.2'
+    crashlyticsVersion = '2.10.1'
 
     junitVersion = '4.12'
     androidJUnitVersion = '1.1.1'
@@ -48,6 +48,7 @@ ext {
             timeDurationPicker : "mobi.upod:time-duration-picker:$timeDurationPickerVersion",
             dateTimePicker     : "com.wdullaer:materialdatetimepicker:$dateTimePickerVersion",
             dataBindingCompiler: "androidx.databinding:databinding-compiler:$databindingVersion",
+            crashlytics        : "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion",
 
             junit              : "junit:junit:$junitVersion",
             androidJUnit       : "androidx.test.ext:junit:$androidJUnitVersion",
