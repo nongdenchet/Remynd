@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
 
@@ -54,17 +55,17 @@ class RemyndListPresenter(
     }
 
     private fun observeClicks() {
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             view.addClicks()
                 .debounce(300)
                 .collect { navigator.showRemindForm() }
         }
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             view.introClicks()
                 .debounce(300)
                 .collect { navigator.showRemindForm() }
         }
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             view.removeClicks()
                 .debounce(300)
                 .collect {
@@ -75,8 +76,8 @@ class RemyndListPresenter(
         }
     }
 
-    private fun removeIDs(ids: Set<Long>) {
-        scope.launch(Dispatchers.IO) {
+    private suspend fun removeIDs(ids: Set<Long>) {
+        withContext(Dispatchers.IO) {
             remyndDao.delete(ids.toList())
             editMode.send(null)
             alarmScheduler.cancel(ids)
@@ -84,7 +85,7 @@ class RemyndListPresenter(
     }
 
     private fun observeItemEvents() {
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             view.itemEvents()
                 .debounce(300)
                 .collect {
@@ -99,59 +100,53 @@ class RemyndListPresenter(
         }
     }
 
-    private fun handleCheckChange(id: Long, value: Boolean) {
-        scope.launch(Dispatchers.Main) {
-            val currentMode = editMode.asFlow().first() ?: return@launch
-            val ids = if (value) {
-                currentMode.ids + id
-            } else {
+    private suspend fun handleCheckChange(id: Long, value: Boolean) {
+        val currentMode = editMode.asFlow().first() ?: return
+        val ids = if (value) {
+            currentMode.ids + id
+        } else {
+            currentMode.ids - id
+        }
+        editMode.send(currentMode.copy(ids = ids))
+    }
+
+    private suspend fun handleLongClick(id: Long) {
+        Log.d(tag, Thread.currentThread().name + ": long click $id")
+        val currentMode = editMode.asFlow().first()
+        val newMode = currentMode ?: EditMode(setOf())
+        editMode.send(newMode.copy(ids = newMode.ids + id))
+        if (currentMode == null) {
+            vibrateUtils.execute()
+        }
+    }
+
+    private suspend fun handleClick(id: Long) {
+        Log.d(tag, Thread.currentThread().name + ": handleClick $id")
+        val currentMode = editMode.asFlow().first()
+        if (currentMode == null) {
+            navigator.showRemindDetails(id)
+        } else {
+            val ids = if (currentMode.ids.contains(id)) {
                 currentMode.ids - id
+            } else {
+                currentMode.ids + id
             }
             editMode.send(currentMode.copy(ids = ids))
         }
     }
 
-    private fun handleLongClick(id: Long) {
-        scope.launch(Dispatchers.Main) {
-            Log.d(tag, Thread.currentThread().name + ": long click $id")
-            val currentMode = editMode.asFlow().first()
-            val newMode = currentMode ?: EditMode(setOf())
-            editMode.send(newMode.copy(ids = newMode.ids + id))
-            if (currentMode == null) {
-                vibrateUtils.execute()
-            }
-        }
-    }
-
-    private fun handleClick(id: Long) {
-        scope.launch(Dispatchers.Main) {
-            Log.d(tag, Thread.currentThread().name + ": handleClick $id")
-            val currentMode = editMode.asFlow().first()
-            if (currentMode == null) {
-                navigator.showRemindDetails(id)
-            } else {
-                val ids = if (currentMode.ids.contains(id)) {
-                    currentMode.ids - id
-                } else {
-                    currentMode.ids + id
-                }
-                editMode.send(currentMode.copy(ids = ids))
-            }
-        }
-    }
-
-    private fun updateItem(id: Long, active: Boolean, position: Int) {
-        scope.launch(Dispatchers.IO) {
+    private suspend fun updateItem(id: Long, active: Boolean, position: Int) {
+        withContext(Dispatchers.IO) {
             Log.d(tag, Thread.currentThread().name + ": switching $id, $active")
-            var entity = remyndDao.get(id) ?: return@launch
+            var entity = remyndDao.get(id) ?: return@withContext
             if (entity.active == active) {
-                return@launch
+                return@withContext
             }
 
             if (!active) {
                 alarmScheduler.cancel(entity.toAlarm())
                 remyndDao.update(entity.copy(active = active))
-                return@launch
+                return@withContext
             }
 
             val calendar = Calendar.getInstance().apply { timeInMillis = entity.triggerAt }
@@ -170,42 +165,47 @@ class RemyndListPresenter(
             }
 
             if (today >= calendar) {
-                scope.launch(Dispatchers.Main) {
-                    view.showError(resourcesProvider.getString(R.string.remynd_list_time_past_error), position)
+                Log.d(tag, Thread.currentThread().name + ": sending error time past")
+                withContext(Dispatchers.Main) {
+                    view.showError(
+                        resourcesProvider.getString(R.string.remynd_list_time_past_error),
+                        position
+                    )
                 }
-                return@launch
+                return@withContext
             }
 
             entity = entity.copy(active = active, triggerAt = calendar.timeInMillis)
             alarmScheduler.schedule(entity.toAlarm())
             remyndDao.update(entity)
-            scope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                Log.d(tag, Thread.currentThread().name + ": sending message")
                 view.showMessage(remindFormatUtils.execute(entity.triggerAt))
             }
         }
     }
 
     private fun observeItems() {
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             editMode.send(null)
-        }
-        scope.launch(Dispatchers.IO) {
-            Log.d(tag, Thread.currentThread().name + ": observe")
-            remyndDao.observe()
-                .combine(editMode.asFlow().distinctUntilChanged()) { entities, editMode ->
-                    toViewModels(entities, editMode)
-                }
-                .collect { (viewModels, editMode) ->
-                    Log.d(tag, Thread.currentThread().name + ": collect data")
-                    val activeCount = formatActiveCount(viewModels)
-                    scope.launch(Dispatchers.Main) {
-                        Log.d(tag, Thread.currentThread().name + ": render data")
-                        view.render(viewModels)
-                        view.renderIntro(viewModels.isEmpty())
-                        view.renderEditMode(editMode != null)
-                        view.renderActiveCount(activeCount)
+            withContext(Dispatchers.IO) {
+                Log.d(tag, Thread.currentThread().name + ": observe")
+                remyndDao.observe()
+                    .combine(editMode.asFlow().distinctUntilChanged()) { entities, editMode ->
+                        toViewModels(entities, editMode)
                     }
-                }
+                    .collect { (viewModels, editMode) ->
+                        Log.d(tag, Thread.currentThread().name + ": collect data")
+                        val activeCount = formatActiveCount(viewModels)
+                        withContext(Dispatchers.Main) {
+                            Log.d(tag, Thread.currentThread().name + ": render data")
+                            view.render(viewModels)
+                            view.renderIntro(viewModels.isEmpty())
+                            view.renderEditMode(editMode != null)
+                            view.renderActiveCount(activeCount)
+                        }
+                    }
+            }
         }
     }
 
@@ -261,7 +261,7 @@ class RemyndListPresenter(
     fun onBackPressed(): Boolean {
         runBlocking { editMode.asFlow().first() } ?: return false
 
-        return scope.launch(Dispatchers.Main) {
+        return scope.launch {
             editMode.send(null)
         }.let { true }
     }

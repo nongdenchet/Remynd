@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -44,9 +45,9 @@ internal class RemyndDetailsPresenter(
 
     fun bind(id: Long?, state: RemyndForm?) {
         Log.d(tag, "bind")
-        scope.launch(Dispatchers.IO) {
-            val init = initForm(id, state)
-            scope.launch(Dispatchers.Main) {
+        scope.launch {
+            val init = withContext(Dispatchers.IO) { initForm(id, state) }
+            withContext(Dispatchers.Default) {
                 actions.asFlow()
                     .distinctUntilChanged()
                     .scan(init) { prev, action ->
@@ -59,7 +60,7 @@ internal class RemyndDetailsPresenter(
                     }
             }
         }
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             form.asFlow()
                 .distinctUntilChanged()
                 .map { mapper.toViewModel(it) }
@@ -68,7 +69,7 @@ internal class RemyndDetailsPresenter(
                     view.render(it)
                 }
         }
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             view.contentChanges()
                 .debounce(300)
                 .collect { setContent(it) }
@@ -77,49 +78,47 @@ internal class RemyndDetailsPresenter(
 
     fun setDate(year: Int, monthOfYear: Int, dayOfMonth: Int) {
         Log.d(tag, "Date picked: $year, $monthOfYear, $dayOfMonth")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateDate(year, monthOfYear, dayOfMonth))
         }
     }
 
-    private fun setContent(content: String) {
+    private suspend fun setContent(content: String) {
         Log.d(tag, "Set content: $content")
-        scope.launch(Dispatchers.Main) {
-            actions.send(RemyndFormAction.UpdateContent(content))
-        }
+        actions.send(RemyndFormAction.UpdateContent(content))
     }
 
     fun setVibrate(checked: Boolean) {
         Log.d(tag, "Set vibrate: $checked")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateVibrate(checked))
         }
     }
 
     fun setEnabled(checked: Boolean) {
         Log.d(tag, "Set enabled: $checked")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateEnabled(checked))
         }
     }
 
     fun setTime(hourOfDay: Int, minute: Int) {
         Log.d(tag, "Time picked: $hourOfDay, $minute")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateTime(hourOfDay, minute))
         }
     }
 
     fun setDateItems(items: List<DateItem>) {
         Log.d(tag, "Date items picked: $items")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateItems(items))
         }
     }
 
     fun setInterval(duration: Long?) {
         Log.d(tag, "Interval picked: $duration")
-        scope.launch(Dispatchers.Main) {
+        scope.launch {
             actions.send(RemyndFormAction.UpdateInterval(duration))
         }
     }
@@ -204,20 +203,21 @@ internal class RemyndDetailsPresenter(
             var entity = mapper.toEntity(form)
 
             if (entity.triggerAt < Calendar.getInstance().timeInMillis) {
-                scope.launch(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     view.showMessage(resourcesProvider.getString(R.string.remynd_details_time_past_error))
                 }
                 return@launch
             }
 
             if (entity.content.isBlank()) {
-                scope.launch(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     view.showMessage(resourcesProvider.getString(R.string.remynd_details_content_empty))
                 }
                 return@launch
             }
 
             // Update DB
+            Log.d(tag, "${Thread.currentThread().name} update db: $entity")
             if (entity.id != 0L) {
                 remyndDao.update(entity)
             } else {
@@ -225,6 +225,7 @@ internal class RemyndDetailsPresenter(
             }
 
             // Schedule alarm
+            Log.d(tag, "${Thread.currentThread().name} schedule: $entity")
             if (entity.active) {
                 alarmScheduler.schedule(entity.toAlarm())
             } else {
@@ -232,7 +233,7 @@ internal class RemyndDetailsPresenter(
             }
 
             // Exit Fragment
-            scope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 view.goBack()
                 view.showMessage(remindFormatUtils.execute(entity.triggerAt))
             }

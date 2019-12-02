@@ -133,7 +133,7 @@ class RemyndDetailsFragment(private val dependency: RemyndDetailsDependency) : F
         binding.llDates.updateDates(vm.dateItems)
         // Two way binding
         vm.content.let {
-            if (!it.userInput) {
+            if (!it.userInput && binding.edtTitle.text.toString() != it.content) {
                 binding.edtTitle.setText(it.content)
                 binding.edtTitle.setSelection(it.content.length)
             }

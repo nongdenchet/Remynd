@@ -69,7 +69,7 @@ internal class RemyndListAdapter :
             binding.sEnabled.setOnCheckedChangeListener { _, isChecked ->
                 val pos = adapterPosition
                 safeGetItem(pos)?.run {
-                    scope.launch(Dispatchers.Main) {
+                    scope.launch {
                         eventChannel.send(ItemEvent.SwitchEvent(id, isChecked, pos))
                     }
                 }
@@ -77,7 +77,7 @@ internal class RemyndListAdapter :
             binding.cbCheck.setOnCheckedChangeListener { _, isChecked ->
                 val pos = adapterPosition
                 safeGetItem(pos)?.run {
-                    scope.launch(Dispatchers.Main) {
+                    scope.launch {
                         eventChannel.send(ItemEvent.CheckEvent(id, isChecked))
                     }
                 }
@@ -85,7 +85,7 @@ internal class RemyndListAdapter :
             binding.root.setOnLongClickListener {
                 val pos = adapterPosition
                 safeGetItem(pos)?.run {
-                    scope.launch(Dispatchers.Main) {
+                    scope.launch {
                         eventChannel.send(ItemEvent.LongClickEvent(id))
                     }
                 }.let { true }
@@ -93,7 +93,7 @@ internal class RemyndListAdapter :
             binding.root.setOnClickListener {
                 val pos = adapterPosition
                 safeGetItem(pos)?.run {
-                    scope.launch(Dispatchers.Main) {
+                    scope.launch {
                         eventChannel.send(ItemEvent.ClickEvent(id))
                     }
                 }
