@@ -45,9 +45,9 @@ internal class RemyndDetailsPresenter(
 
     fun bind(id: Long?, state: RemyndForm?) {
         Log.d(tag, "bind")
-        scope.launch {
-            val init = withContext(Dispatchers.IO) { initForm(id, state) }
-            withContext(Dispatchers.Default) {
+        scope.launch(Dispatchers.IO) {
+            val init = initForm(id, state)
+            withContext(Dispatchers.Main) {
                 actions.asFlow()
                     .distinctUntilChanged()
                     .scan(init) { prev, action ->
